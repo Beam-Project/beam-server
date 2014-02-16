@@ -23,8 +23,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.inchat.common.Config;
 import org.inchat.common.Participant;
-import org.inchat.common.crypto.EccKeyPairGenerator;
-import org.inchat.common.crypto.KeyPairStore;
 
 /**
  * {@link Init} operates as an init service which is invoked on every startup of
@@ -51,11 +49,7 @@ public class Init implements ServletContextListener {
         loadConfigFileOrCreateOne();
         readImportanntConfigEntries();
 
-        if (isKeyPairExisting()) {
-            loadParticipant();
-        } else {
-            createAndStoreNewParticipant();
-        }
+        Config.loadOrCreateParticipant();
     }
 
     private void loadConfigFileOrCreateOne() {
@@ -70,38 +64,8 @@ public class Init implements ServletContextListener {
     }
 
     private void readImportanntConfigEntries() {
-        keyPairFilename = Config.getProperty(Config.Keys.keyPairFilename.toString());
-        keyPairPassword = Config.getProperty(Config.Keys.keyPairPassword.toString());
-    }
-
-    private boolean isKeyPairExisting() {
-        File privateKeyFile = new File(keyPairFilename + KeyPairStore.PRIVATE_KEY_FILE_EXTENSION);
-        File publicKeyFile = new File(keyPairFilename + KeyPairStore.PUBILC_KEY_FILE_EXTENSION);
-        File saltFile = new File(keyPairFilename + KeyPairStore.SALT_FILE_EXTENSION);
-
-        if (!privateKeyFile.exists()) {
-            return false;
-        }
-
-        if (!publicKeyFile.exists()) {
-            return false;
-        }
-
-        return saltFile.exists();
-    }
-
-    private void loadParticipant() {
-        KeyPairStore store = new KeyPairStore(keyPairPassword, keyPairFilename);
-        Participant participant = new Participant(store.readKeys());
-        Config.setParticipant(participant);
-    }
-
-    private void createAndStoreNewParticipant() {
-        Participant participant = new Participant(EccKeyPairGenerator.generate());
-        Config.setParticipant(participant);
-
-        KeyPairStore store = new KeyPairStore(keyPairPassword, keyPairFilename);
-        store.storeKeys(participant.getKeyPair());
+        keyPairFilename = Config.getProperty(Config.Key.keyPairFilename);
+        keyPairPassword = Config.getProperty(Config.Key.keyPairPassword);
     }
 
     @Override
