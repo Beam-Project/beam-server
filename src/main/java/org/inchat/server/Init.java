@@ -35,7 +35,7 @@ import org.inchat.common.Participant;
  */
 public class Init implements ServletContextListener {
 
-    String CONFIG_FILE_NAME = "inchat-server.conf";
+    String CONFIG_FILENAME = "inchat-server.conf";
     String keyPairPassword;
     String keyPairFilename;
 
@@ -53,13 +53,13 @@ public class Init implements ServletContextListener {
     }
 
     private void loadConfigFileOrCreateOne() {
-        File defaultFile = new File(CONFIG_FILE_NAME);
+        File configFile = new File(CONFIG_FILENAME);
 
-        if (defaultFile.exists()) {
-            Config.loadConfigFile(defaultFile);
+        if (configFile.exists()) {
+            Config.loadConfig(CONFIG_FILENAME);
         } else {
-            Config.createDefaultConfig(defaultFile);
-            Config.loadConfigFile(defaultFile);
+            Config.createDefaultConfig(CONFIG_FILENAME);
+            Config.loadConfig(CONFIG_FILENAME);
         }
     }
 

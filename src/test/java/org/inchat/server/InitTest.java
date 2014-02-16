@@ -36,14 +36,14 @@ public class InitTest {
 
     @Before
     public void setUp() throws IOException {
-        cleanUp();
+        deleteConfig();
         restoreOriginalTestConfigFile();
 
         event = createMock(ServletContextEvent.class);
         replay(event);
 
         init = new Init();
-        init.CONFIG_FILE_NAME = CONFIG_FILE_NAME;
+        init.CONFIG_FILENAME = CONFIG_FILE_NAME;
     }
 
     @After
@@ -52,14 +52,14 @@ public class InitTest {
     }
 
     private void restoreOriginalTestConfigFile() throws IOException {
-        Config.createDefaultConfig(new File(CONFIG_FILE_NAME));
+        Config.createDefaultConfig(CONFIG_FILE_NAME);
     }
 
     @Test
     public void testSetUpOfConfigFileName() {
         String expectedName = "inchat-server.conf";
         init = new Init();
-        assertEquals(expectedName, init.CONFIG_FILE_NAME);
+        assertEquals(expectedName, init.CONFIG_FILENAME);
     }
 
     @Test
