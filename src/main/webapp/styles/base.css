@@ -1,0 +1,139 @@
+/*
+Copyright (C) 2013, 2014 inchat.org
+
+This file is part of inchat-server.
+
+inchat-server is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+inchat-server is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/* 
+    Created on : Feb 15, 2014, 10:47:37 PM
+*/
+
+/*
+    Fonts
+*/
+
+a, a:active, a:visited, a:hover {
+    color: #1d93f1;
+    text-decoration: none;
+}
+
+h1, h2, h3, h3, h4, h5, h6 {
+    color : rgb(29, 147, 241);
+}
+
+h1 {
+    margin : 0 0 0.5em;
+    font-weight: bold;
+    font-size: 1.75em;
+}
+
+h2 {
+    margin : 1em 0 0.2em;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+h3 {
+    margin : 1em 0 0;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+p {
+    margin-bottom: 0.75em;
+    line-height: 1.5em;
+}
+
+strong,
+b {
+    font-weight: bold;
+}
+
+i {
+    font-style: italic;
+}
+
+ul {
+    padding: 0 0 1em 2em;
+}
+
+ul li {
+    list-style: square;
+    margin: 0 0 0.5em .7em;
+    padding-left: 0.3em;
+}
+
+code {
+    word-wrap:break-word;
+    font-family: monospace;
+} 
+
+/*
+    Gradients
+*/
+
+.gradientBlue {
+    background: #a2d3f9;
+    background: -moz-linear-gradient(top,  #a2d3f9 0%, #1d93f1 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a2d3f9), color-stop(100%,#1d93f1));
+    background: -webkit-linear-gradient(top,  #a2d3f9 0%,#1d93f1 100%);
+    background: -o-linear-gradient(top,  #a2d3f9 0%,#1d93f1 100%);
+    background: -ms-linear-gradient(top,  #a2d3f9 0%,#1d93f1 100%);
+    background: linear-gradient(to bottom,  #a2d3f9 0%,#1d93f1 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a2d3f9', endColorstr='#1d93f1',GradientType=0 );
+}
+
+/*
+    Boxes
+*/
+
+.boxInfo {
+    margin: 1em 0;
+    padding: 1em 1em 1em 90px;
+    background-color: #FFFF8F;
+    border: 1px solid #FFA852;
+    border-radius: 4px;
+    background-image: url('../images/icons/PNG-48/Info.png');
+    background-repeat: no-repeat;
+    background-position: 20px 20px;
+}
+
+/*
+    Structure
+*/
+
+body {
+    font-size: 100%;
+    font-family: Arial, sans-serif;
+    line-height: 140%;
+    color: rgb(85, 85, 85);
+}
+
+#wrapper {
+    max-width: 930px;
+    margin : 3em auto 1em;
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 100%;
+    min-height: 100%;
+}
+
+footer {
+    clear: both;
+    margin: 2em;
+    text-align: center;
+    font-size: small;
+}
+
