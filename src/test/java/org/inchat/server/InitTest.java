@@ -88,7 +88,7 @@ public class InitTest {
             File publicKey = new File(Config.getProperty(Config.Key.keyPairFilename) + KeyPairStore.PUBILC_KEY_FILE_EXTENSION);
             File privateKey = new File(Config.getProperty(Config.Key.keyPairFilename) + KeyPairStore.PRIVATE_KEY_FILE_EXTENSION);
             File salt = new File(Config.getProperty(Config.Key.keyPairFilename) + KeyPairStore.SALT_FILE_EXTENSION);
-            
+
             if (publicKey.exists()) {
                 publicKey.delete();
             }
@@ -99,7 +99,6 @@ public class InitTest {
                 salt.delete();
             }
         }
-
     }
 
 }
