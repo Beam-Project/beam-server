@@ -23,6 +23,7 @@ import java.io.IOException;
 import javax.servlet.ServletContextEvent;
 import static org.easymock.EasyMock.*;
 import org.inchat.common.Config;
+import org.inchat.common.crypto.KeyPairStore;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -30,13 +31,13 @@ import org.junit.Before;
 
 public class InitTest {
 
-    private final static String CONFIG_FILE_NAME = "src/test/resources/org/inchat/server/test-config-file.conf";
+    private final static String CONFIG_FILE_NAME = "test-config-file.conf";
     private ServletContextEvent event;
     private Init init;
 
     @Before
     public void setUp() throws IOException {
-        deleteConfig();
+        deleteConfigAndGeneratedKeyPairs();
         restoreOriginalTestConfigFile();
 
         event = createMock(ServletContextEvent.class);
@@ -48,7 +49,7 @@ public class InitTest {
 
     @After
     public void cleanUp() {
-        deleteConfig();
+        deleteConfigAndGeneratedKeyPairs();
     }
 
     private void restoreOriginalTestConfigFile() throws IOException {
@@ -77,12 +78,28 @@ public class InitTest {
         assertNotNull(Config.getParticipant());
     }
 
-    private void deleteConfig() {
-        File config = new File(CONFIG_FILE_NAME);
+    private void deleteConfigAndGeneratedKeyPairs() {
+        File config = new File(CONFIG_FILE_NAME).getAbsoluteFile();
 
         if (config.exists()) {
+            Config.loadConfig(CONFIG_FILE_NAME);
             config.delete();
+
+            File publicKey = new File(Config.getProperty(Config.Key.keyPairFilename) + KeyPairStore.PUBILC_KEY_FILE_EXTENSION);
+            File privateKey = new File(Config.getProperty(Config.Key.keyPairFilename) + KeyPairStore.PRIVATE_KEY_FILE_EXTENSION);
+            File salt = new File(Config.getProperty(Config.Key.keyPairFilename) + KeyPairStore.SALT_FILE_EXTENSION);
+            
+            if (publicKey.exists()) {
+                publicKey.delete();
+            }
+            if (privateKey.exists()) {
+                privateKey.delete();
+            }
+            if (salt.exists()) {
+                salt.delete();
+            }
         }
+
     }
 
 }
