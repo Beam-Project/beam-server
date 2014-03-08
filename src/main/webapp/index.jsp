@@ -17,7 +17,7 @@
             <h1>inchat-server</h1>
             <p>You can send inchat messages via this server to communicate privately.</p>
             <p>The public key is:</p>
-            <p><code><%= Config.getParticipant().getPublicKeyAsHex()%></code></p>
+            <p><code><%= Config.getParticipant().getPublicKeyAsBase58()%></code></p>
             <p>You can also just click the link: <a href="<%= UrlAssembler.toUrlByServer(Config.getParticipant())%>">inchat-server</a></p>
 
             <p>Interact with this server via the following paths and methods:</p>
