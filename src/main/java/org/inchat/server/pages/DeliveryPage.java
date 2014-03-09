@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.inchat.common.Config;
 import org.inchat.common.Message;
+import org.inchat.common.MessageField;
 import org.inchat.common.crypto.CryptoPacker;
 import org.inchat.common.util.Base64;
 
@@ -67,7 +68,7 @@ public class DeliveryPage extends HttpServlet {
     private void sendResponse(HttpServletResponse response) throws IOException {
         response.setContentType(CONTENT_TYPE);
         response.setStatus(HttpServletResponse.SC_ACCEPTED);
-        System.out.println("IN: " + new String(message.getContent()));
+        System.out.println("IN: " + new String(message.getContent().get(MessageField.CNT_MSG.toString())));
 
         try (PrintWriter out = response.getWriter()) {
             out.println("<!DOCTYPE html>");
@@ -76,7 +77,7 @@ public class DeliveryPage extends HttpServlet {
             out.println("<title>Servlet deliver</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>It works!</h1><p>Msg:" + new String(message.getContent()) + " </p>");
+            out.println("<h1>It works!</h1><p>Msg:" + new String(message.getContent().get(MessageField.CNT_MSG.toString())) + " </p>");
             out.println("</body>");
             out.println("</html>");
         }
