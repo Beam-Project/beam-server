@@ -68,6 +68,7 @@
                 <version>2.1</version>
                 <executions>
                     <execution>
+                        <id>default-install</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>copy</goal>
@@ -83,6 +84,16 @@
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>lib-directory</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
