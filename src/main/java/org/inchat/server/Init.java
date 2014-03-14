@@ -18,7 +18,6 @@
  */
 package org.inchat.server;
 
-import java.io.File;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.inchat.common.Config;
@@ -35,9 +34,9 @@ import org.inchat.common.Participant;
  */
 public class Init implements ServletContextListener {
 
-    String CONFIG_FILENAME = "inchat-server.conf";
+    static Config config;
+    static String CONFIG_FILENAME = "inchat-server.conf";
     String keyPairPassword;
-    String keyPairFilename;
 
     /**
      * This method will be invoked at every startup of the web application.
@@ -46,26 +45,20 @@ public class Init implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent event) {
-        loadConfigFileOrCreateOne();
+        loadConfig();
         readImportanntConfigEntries();
-
-        Config.loadOrCreateParticipant();
     }
 
-    private void loadConfigFileOrCreateOne() {
-        File configFile = new File(CONFIG_FILENAME);
-
-        if (configFile.exists()) {
-            Config.loadConfig(CONFIG_FILENAME);
-        } else {
-            Config.createDefaultConfig(CONFIG_FILENAME);
-            Config.loadConfig(CONFIG_FILENAME);
-        }
+    private void loadConfig() {
+        config = new Config(CONFIG_FILENAME);
     }
 
     private void readImportanntConfigEntries() {
-        keyPairFilename = Config.getProperty(Config.Key.keyPairFilename);
-        keyPairPassword = Config.getProperty(Config.Key.keyPairPassword);
+        keyPairPassword = config.getProperty(ServerConfigKey.keyPairPassword);
+    }
+    
+    public static Config getConfig() {
+        return config;
     }
 
     @Override

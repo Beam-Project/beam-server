@@ -22,8 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import javax.servlet.ServletContextEvent;
 import static org.easymock.EasyMock.*;
-import org.inchat.common.Config;
-import org.inchat.common.crypto.KeyPairStore;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -31,74 +29,35 @@ import org.junit.Before;
 
 public class InitTest {
 
-    private final static String CONFIG_FILE_NAME = "test-config-file.conf";
+    private final static String CONFIG_FILE = "server-test-config.conf";
+    private File configFile;
     private ServletContextEvent event;
     private Init init;
 
     @Before
     public void setUp() throws IOException {
-        deleteConfigAndGeneratedKeyPairs();
-        restoreOriginalTestConfigFile();
-
+        configFile = new File(CONFIG_FILE);
         event = createMock(ServletContextEvent.class);
         replay(event);
 
+        Init.CONFIG_FILENAME = CONFIG_FILE;
         init = new Init();
-        init.CONFIG_FILENAME = CONFIG_FILE_NAME;
+        init.contextInitialized(event);
     }
 
     @After
     public void cleanUp() {
-        deleteConfigAndGeneratedKeyPairs();
-    }
-
-    private void restoreOriginalTestConfigFile() throws IOException {
-        Config.createDefaultConfig(CONFIG_FILE_NAME);
-    }
-
-    @Test
-    public void testSetUpOfConfigFileName() {
-        String expectedName = "inchat-server.conf";
-        init = new Init();
-        assertEquals(expectedName, init.CONFIG_FILENAME);
+        configFile.delete();
     }
 
     @Test
     public void testContextInitOnCreatingConfig() {
-        File config = new File(CONFIG_FILE_NAME);
-
-        if (config.exists()) {
-            config.delete();
-        }
-
-        assertFalse(config.exists());
-
-        init.contextInitialized(event);
-        assertTrue(config.exists());
-        assertNotNull(Config.getParticipant());
+        assertNotNull(init.config);
     }
 
-    private void deleteConfigAndGeneratedKeyPairs() {
-        File config = new File(CONFIG_FILE_NAME).getAbsoluteFile();
-
-        if (config.exists()) {
-            Config.loadConfig(CONFIG_FILE_NAME);
-            config.delete();
-
-            File publicKey = new File(Config.getProperty(Config.Key.keyPairFilename) + KeyPairStore.PUBILC_KEY_FILE_EXTENSION);
-            File privateKey = new File(Config.getProperty(Config.Key.keyPairFilename) + KeyPairStore.PRIVATE_KEY_FILE_EXTENSION);
-            File salt = new File(Config.getProperty(Config.Key.keyPairFilename) + KeyPairStore.SALT_FILE_EXTENSION);
-
-            if (publicKey.exists()) {
-                publicKey.delete();
-            }
-            if (privateKey.exists()) {
-                privateKey.delete();
-            }
-            if (salt.exists()) {
-                salt.delete();
-            }
-        }
+    @Test
+    public void testGetConfig() {
+        assertSame(Init.config, Init.getConfig());
     }
 
 }

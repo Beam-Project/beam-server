@@ -16,15 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.inchat.server.pages;
+package org.inchat.server;
 
+import static org.easymock.EasyMock.*;
+import org.inchat.common.Config;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class DeliveryPageTest {
-
-    @Test
-    public void test() {
-
+public class AppTest {
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetConfigOnNull() {
+        App.setConfig(null);
     }
-
+    
+    @Test
+    public void testSetAndGetConfig() {
+        Config config = createMock(Config.class);
+        
+        assertNull(App.config);
+        assertNull(App.getConfig());
+        
+        App.setConfig(config);
+        assertEquals(config, App.getConfig());
+    }
+    
 }

@@ -16,15 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.inchat.server.pages;
+package org.inchat.server;
 
-import org.junit.Test;
+import org.inchat.common.ConfigKey;
 
-public class DeliveryPageTest {
+public enum ServerConfigKey implements ConfigKey {
 
-    @Test
-    public void test() {
-
-    }
-
+    keyPairPassword;
 }

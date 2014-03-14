@@ -25,11 +25,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.inchat.common.Config;
 import org.inchat.common.Message;
 import org.inchat.common.MessageField;
 import org.inchat.common.crypto.CryptoPacker;
 import org.inchat.common.util.Base64;
+import org.inchat.server.App;
 
 /**
  * This servlet takes incoming messages and processes them.
@@ -62,7 +62,7 @@ public class DeliveryPage extends HttpServlet {
 
     private void decryptAndUnpack() {
         CryptoPacker packer = new CryptoPacker();
-        message = packer.decryptAndUnpack(ciphertext, Config.getParticipant());
+        message = packer.decryptAndUnpack(ciphertext, App.getParticipant());
     }
 
     private void sendResponse(HttpServletResponse response) throws IOException {
