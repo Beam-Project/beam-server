@@ -21,6 +21,10 @@ package org.inchat.server;
 import org.inchat.common.ConfigKey;
 
 public enum ServerConfigKey implements ConfigKey {
-
-    keyPairPassword;
+    keyPairPassword,
+    keyPairSalt,
+    encryptedPublicKey,
+    encryptedPrivateKey,
+    serverName,
+    serverUrl;
 }

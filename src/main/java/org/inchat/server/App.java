@@ -18,9 +18,12 @@
  */
 package org.inchat.server;
 
+import java.security.KeyPair;
 import org.inchat.common.Config;
 import org.inchat.common.Participant;
-import org.inchat.common.util.Exceptions;
+import org.inchat.common.crypto.EccKeyPairGenerator;
+import org.inchat.common.crypto.EncryptedKeyPair;
+import org.inchat.common.crypto.KeyPairCryptor;
 
 /**
  * This class provides static access to global instances, such as the
@@ -29,26 +32,65 @@ import org.inchat.common.util.Exceptions;
  */
 public class App {
 
+    public final static String DEFAULT_KEY_PAIR_PASSWORD = "default-password";
+    static String CONFIG_FILENAME = "inchat-server.conf";
     static Config config;
+    static Participant participant;
 
     /**
-     * Sets a {@link Config} instance to this class.
-     *
-     * @param config The config to set. This may not be null.
-     * @throws IllegalArgumentException If the argument is null.
+     * Load environment when first accessing this class.
      */
-    public static void setConfig(Config config) {
-        Exceptions.verifyArgumentNotNull(config);
+    static {
+        loadConfig();
+        loadParticipant();
+    }
 
-        App.config = config;
+    private static void loadConfig() {
+        config = new Config(CONFIG_FILENAME);
+    }
+
+    private static void loadParticipant() {
+        if (isEncryptedKeyPairStored()) {
+            readAndDecryptParticipantFromConfig();
+        } else {
+            generateAndStoreParticipant();
+        }
+    }
+
+    private static boolean isEncryptedKeyPairStored() {
+        return config.isKeyExisting(ServerConfigKey.keyPairPassword)
+                && config.isKeyExisting(ServerConfigKey.keyPairSalt)
+                && config.isKeyExisting(ServerConfigKey.encryptedPublicKey)
+                && config.isKeyExisting(ServerConfigKey.encryptedPrivateKey);
+    }
+
+    private static void readAndDecryptParticipantFromConfig() {
+        String password = config.getProperty(ServerConfigKey.keyPairPassword);
+        String salt = config.getProperty(ServerConfigKey.keyPairSalt);
+        String encryptedPublicKey = config.getProperty(ServerConfigKey.encryptedPublicKey);
+        String encryptedPrivateKey = config.getProperty(ServerConfigKey.encryptedPrivateKey);
+        EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(encryptedPublicKey, encryptedPrivateKey, salt);
+
+        KeyPair keyPair = KeyPairCryptor.decrypt(password, encryptedKeyPair);
+        participant = new Participant(keyPair);
+    }
+
+    private static void generateAndStoreParticipant() {
+        participant = new Participant(EccKeyPairGenerator.generate());
+
+        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(DEFAULT_KEY_PAIR_PASSWORD, participant.getKeyPair());
+        App.config.setProperty(ServerConfigKey.keyPairPassword, DEFAULT_KEY_PAIR_PASSWORD);
+        App.config.setProperty(ServerConfigKey.keyPairSalt, encryptedKeyPair.getSalt());
+        App.config.setProperty(ServerConfigKey.encryptedPublicKey, encryptedKeyPair.getEncryptedPublicKey());
+        App.config.setProperty(ServerConfigKey.encryptedPrivateKey, encryptedKeyPair.getEncryptedPrivateKey());
     }
 
     public static Config getConfig() {
         return App.config;
     }
-    
+
     public static Participant getParticipant() {
-        return null;
+        return participant;
     }
 
 }
