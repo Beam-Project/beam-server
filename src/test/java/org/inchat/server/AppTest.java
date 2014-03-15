@@ -18,27 +18,56 @@
  */
 package org.inchat.server;
 
-import static org.easymock.EasyMock.*;
+import java.io.File;
+import java.security.KeyPair;
 import org.inchat.common.Config;
+import org.inchat.common.crypto.EncryptedKeyPair;
+import org.inchat.common.crypto.KeyPairCryptor;
+import org.junit.AfterClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 
 public class AppTest {
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetConfigOnNull() {
-        App.setConfig(null);
+
+    private static File configFile;
+    private static Config config;
+
+    @BeforeClass
+    public static void setUpClass() {
+        configFile = new File(App.CONFIG_FILENAME);
+        config = new Config(App.CONFIG_FILENAME);
     }
-    
+
+    @AfterClass
+    public static void cleanUpClass() {
+        configFile.delete();
+    }
+
     @Test
-    public void testSetAndGetConfig() {
-        Config config = createMock(Config.class);
-        
-        assertNull(App.config);
-        assertNull(App.getConfig());
-        
-        App.setConfig(config);
-        assertEquals(config, App.getConfig());
+    public void testClassOnCreatingConfig() {
+        assertNotNull(App.getConfig());
+        assertTrue(configFile.exists());
     }
-    
+
+    @Test
+    public void testClassOnCreatingParticipant() {
+        assertNotNull(App.getParticipant());
+        
+        String password = config.getProperty(ServerConfigKey.keyPairPassword);
+        String salt = config.getProperty(ServerConfigKey.keyPairSalt);
+        String encryptedPublicKey = config.getProperty(ServerConfigKey.encryptedPublicKey);
+        String encryptedPrivateKey = config.getProperty(ServerConfigKey.encryptedPrivateKey);
+        EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(encryptedPublicKey, encryptedPrivateKey, salt);
+        KeyPair keyPair = KeyPairCryptor.decrypt(password, encryptedKeyPair);
+        
+        assertArrayEquals(keyPair.getPublic().getEncoded(), App.getParticipant().getPublicKeyAsBytes());
+        assertArrayEquals(keyPair.getPrivate().getEncoded(), App.getParticipant().getPrivateKeyAsBytes());
+    }
+
+    @Test
+    public void testGetConfig() {
+        assertSame(App.config, App.getConfig());
+    }
+
 }

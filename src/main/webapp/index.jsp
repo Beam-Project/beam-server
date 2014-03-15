@@ -1,5 +1,5 @@
-<%@page import="org.inchat.common.transfer.UrlAssembler"%>
-<%@page import="org.inchat.common.Config"%>
+<%@page import="org.inchat.common.network.UrlAssembler"%>
+<%@page import="org.inchat.server.App"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
@@ -17,8 +17,8 @@
             <h1>inchat-server</h1>
             <p>You can send inchat messages via this server to communicate privately.</p>
             <p>The public key is:</p>
-            <p><code><%= Config.getParticipant().getPublicKeyAsBase58()%></code></p>
-            <p>You can also just click the link: <a href="<%= UrlAssembler.toUrlByServer(Config.getParticipant())%>">inchat-server</a></p>
+            <p><code><%= App.getParticipant().getPublicKeyAsBase58()%></code></p>
+            <p>You can also just click the link: <a href="<%= UrlAssembler.toUrlByServer(App.getParticipant())%>">inchat-server</a></p>
 
             <p>Interact with this server via the following paths and methods:</p>
             <ul>

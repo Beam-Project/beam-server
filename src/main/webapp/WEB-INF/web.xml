@@ -5,8 +5,4 @@
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
-    <listener>
-        <!--Invoces an init class every time the application starts.-->
-        <listener-class>org.inchat.server.Init</listener-class>
-    </listener>
 </web-app>
