@@ -1,14 +1,14 @@
 /*
- * Copyright (C) 2013, 2014 inchat.org
+ * Copyright (C) 2013, 2014 beamproject.org
  *
- * This file is part of inchat-server.
+ * This file is part of beam-server.
  *
- * inchat-server is free software: you can redistribute it and/or modify
+ * beam-server is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * inchat-server is distributed in the hope that it will be useful,
+ * beam-server is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.inchat.server;
+package org.beamproject.server;
 
 import java.security.KeyPair;
-import org.inchat.common.Config;
-import org.inchat.common.Participant;
-import org.inchat.common.crypto.EccKeyPairGenerator;
-import org.inchat.common.crypto.EncryptedKeyPair;
-import org.inchat.common.crypto.KeyPairCryptor;
+import org.beamproject.common.Config;
+import org.beamproject.common.Participant;
+import org.beamproject.common.crypto.EccKeyPairGenerator;
+import org.beamproject.common.crypto.EncryptedKeyPair;
+import org.beamproject.common.crypto.KeyPairCryptor;
 
 /**
  * This class provides static access to global instances, such as the
@@ -33,7 +33,7 @@ import org.inchat.common.crypto.KeyPairCryptor;
 public class App {
 
     public final static String DEFAULT_KEY_PAIR_PASSWORD = "default-password";
-    static String CONFIG_FILENAME = "inchat-server.conf";
+    static String CONFIG_FILENAME = "beam-server.conf";
     static Config config;
     static Participant participant;
 

@@ -2,12 +2,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.inchat</groupId>
-    <artifactId>inchat-server</artifactId>
+    <groupId>org.beamproject</groupId>
+    <artifactId>beam-server</artifactId>
     <version>0.0.1</version>
     <packaging>war</packaging>
 
-    <name>inchat-server</name>
+    <name>beam-server</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>inchat-common</artifactId>
+            <artifactId>beam-common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
