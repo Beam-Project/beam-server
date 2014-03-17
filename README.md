@@ -1,4 +1,4 @@
-inchat-server
+beam-server
 =============
 
-The inchat server
+The Beam server.
