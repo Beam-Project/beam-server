@@ -19,11 +19,12 @@
 package org.beamproject.server;
 
 import java.security.KeyPair;
-import org.beamproject.common.Config;
+import org.aeonbits.owner.ConfigFactory;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.KeyPairCryptor;
+import org.beamproject.common.util.Configs;
 
 /**
  * This class provides static access to global instances, such as the
@@ -32,21 +33,14 @@ import org.beamproject.common.crypto.KeyPairCryptor;
  */
 public class App {
 
-    public final static String DEFAULT_KEY_PAIR_PASSWORD = "default-password";
-    static String CONFIG_FILENAME = "beam-server.conf";
-    static Config config;
+    static Config config = ConfigFactory.create(Config.class);
     static Participant participant;
 
     /**
      * Load environment when first accessing this class.
      */
     static {
-        loadConfig();
         loadParticipant();
-    }
-
-    private static void loadConfig() {
-        config = new Config(CONFIG_FILENAME);
     }
 
     private static void loadParticipant() {
@@ -58,35 +52,23 @@ public class App {
     }
 
     private static boolean isEncryptedKeyPairStored() {
-        return config.isKeyExisting(ServerConfigKey.keyPairPassword)
-                && config.isKeyExisting(ServerConfigKey.keyPairSalt)
-                && config.isKeyExisting(ServerConfigKey.encryptedPublicKey)
-                && config.isKeyExisting(ServerConfigKey.encryptedPrivateKey);
+        return config.encryptedPublicKey() != null && config.encryptedPrivateKey() != null;
     }
 
     private static void readAndDecryptParticipantFromConfig() {
-        String password = config.getProperty(ServerConfigKey.keyPairPassword);
-        String salt = config.getProperty(ServerConfigKey.keyPairSalt);
-        String encryptedPublicKey = config.getProperty(ServerConfigKey.encryptedPublicKey);
-        String encryptedPrivateKey = config.getProperty(ServerConfigKey.encryptedPrivateKey);
-        EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(encryptedPublicKey, encryptedPrivateKey, salt);
-
-        KeyPair keyPair = KeyPairCryptor.decrypt(password, encryptedKeyPair);
+        EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(config.encryptedPublicKey(), config.encryptedPrivateKey(), config.keyPairSalt());
+        KeyPair keyPair = KeyPairCryptor.decrypt(config.keyPairPassword(), encryptedKeyPair);
         participant = new Participant(keyPair);
     }
 
     private static void generateAndStoreParticipant() {
         participant = new Participant(EccKeyPairGenerator.generate());
 
-        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(DEFAULT_KEY_PAIR_PASSWORD, participant.getKeyPair());
-        App.config.setProperty(ServerConfigKey.keyPairPassword, DEFAULT_KEY_PAIR_PASSWORD);
-        App.config.setProperty(ServerConfigKey.keyPairSalt, encryptedKeyPair.getSalt());
-        App.config.setProperty(ServerConfigKey.encryptedPublicKey, encryptedKeyPair.getEncryptedPublicKey());
-        App.config.setProperty(ServerConfigKey.encryptedPrivateKey, encryptedKeyPair.getEncryptedPrivateKey());
-    }
-
-    public static Config getConfig() {
-        return App.config;
+        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(config.keyPairPassword(), participant.getKeyPair());
+        config.setProperty("keyPairSalt", encryptedKeyPair.getSalt());
+        config.setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
+        config.setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
+        Configs.storeConfig(config, Config.FOLDER, Config.FILE);
     }
 
     public static Participant getParticipant() {
