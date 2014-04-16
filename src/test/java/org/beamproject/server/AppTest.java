@@ -53,14 +53,14 @@ public class AppTest {
     @Test
     public void testClassOnCreatingParticipant() {
         assertNotNull(App.getParticipant());
-        
+
         String password = config.getProperty(ServerConfigKey.keyPairPassword);
         String salt = config.getProperty(ServerConfigKey.keyPairSalt);
         String encryptedPublicKey = config.getProperty(ServerConfigKey.encryptedPublicKey);
         String encryptedPrivateKey = config.getProperty(ServerConfigKey.encryptedPrivateKey);
         EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(encryptedPublicKey, encryptedPrivateKey, salt);
         KeyPair keyPair = KeyPairCryptor.decrypt(password, encryptedKeyPair);
-        
+
         assertArrayEquals(keyPair.getPublic().getEncoded(), App.getParticipant().getPublicKeyAsBytes());
         assertArrayEquals(keyPair.getPrivate().getEncoded(), App.getParticipant().getPrivateKeyAsBytes());
     }

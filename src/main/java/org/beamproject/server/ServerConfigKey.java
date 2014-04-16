@@ -21,6 +21,7 @@ package org.beamproject.server;
 import org.beamproject.common.ConfigKey;
 
 public enum ServerConfigKey implements ConfigKey {
+
     keyPairPassword,
     keyPairSalt,
     encryptedPublicKey,
