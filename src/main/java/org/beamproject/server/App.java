@@ -33,14 +33,16 @@ import org.beamproject.common.util.Configs;
  */
 public class App {
 
-    static Config config = ConfigFactory.create(Config.class);
+    static Config config;
     static Participant participant;
 
-    /**
-     * Load environment when first accessing this class.
-     */
     static {
+        loadConfig();
         loadParticipant();
+    }
+
+    private static void loadConfig() {
+        config = ConfigFactory.create(Config.class);
     }
 
     private static void loadParticipant() {
