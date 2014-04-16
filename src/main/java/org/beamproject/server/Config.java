@@ -21,6 +21,12 @@ package org.beamproject.server;
 import static org.aeonbits.owner.Config.Sources;
 import org.beamproject.common.util.ConfigBase;
 
+/**
+ * This class is used for configuration purposes and interacts with the OWNER
+ * library (see: http://owner.aeonbits.org/).
+ *
+ * @see ConfigBase
+ */
 @Sources({"file:~/.beam/server.conf"})
 public interface Config extends ConfigBase {
 
