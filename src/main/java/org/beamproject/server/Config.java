@@ -31,7 +31,7 @@ import org.beamproject.common.util.ConfigBase;
 public interface Config extends ConfigBase {
 
     public final static String FOLDER = System.getProperty("user.home") + "/.beam/";
-    public final static String FILE = FOLDER + "server.conf";
+    public final static String FILE = "server.conf";
 
     @DefaultValue("keypair-password")
     String keyPairPassword();

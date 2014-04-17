@@ -24,7 +24,7 @@ import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.KeyPairCryptor;
-import org.beamproject.common.util.Configs;
+import org.beamproject.common.util.ConfigWriter;
 
 /**
  * This class provides static access to global instances, such as the
@@ -33,6 +33,7 @@ import org.beamproject.common.util.Configs;
  */
 public class App {
 
+    static ConfigWriter configWriter;
     static Config config;
     static Participant participant;
 
@@ -42,6 +43,7 @@ public class App {
     }
 
     private static void loadConfig() {
+        configWriter = new ConfigWriter();
         config = ConfigFactory.create(Config.class);
     }
 
@@ -49,7 +51,8 @@ public class App {
         if (isEncryptedKeyPairStored()) {
             readAndDecryptParticipantFromConfig();
         } else {
-            generateAndStoreParticipant();
+            generateParticipant();
+            storeConfig();
         }
     }
 
@@ -63,18 +66,21 @@ public class App {
         participant = new Participant(keyPair);
     }
 
-    private static void generateAndStoreParticipant() {
+    private static void generateParticipant() {
         participant = new Participant(EccKeyPairGenerator.generate());
 
         EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(config.keyPairPassword(), participant.getKeyPair());
         config.setProperty("keyPairSalt", encryptedKeyPair.getSalt());
         config.setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
         config.setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
-        Configs.storeConfig(config, Config.FOLDER, Config.FILE);
     }
 
     public static Participant getParticipant() {
         return participant;
+    }
+
+    public static void storeConfig() {
+        configWriter.writeConfig(config, Config.FOLDER, Config.FILE);
     }
 
 }
