@@ -24,6 +24,7 @@ import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.KeyPairCryptor;
+import org.beamproject.common.util.Base58;
 import org.beamproject.common.util.ConfigWriter;
 
 /**
@@ -61,7 +62,11 @@ public class App {
     }
 
     private static void readAndDecryptServerFromConfig() {
-        EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(config.encryptedPublicKey(), config.encryptedPrivateKey(), config.keyPairSalt());
+        byte[] publicKey = Base58.decode(config.encryptedPublicKey());
+        byte[] privateKey = Base58.decode(config.encryptedPrivateKey());
+        byte[] salt = Base58.decode(config.keyPairSalt());
+
+        EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(publicKey, privateKey, salt);
         KeyPair keyPair = KeyPairCryptor.decrypt(config.keyPairPassword(), encryptedKeyPair);
         server = new Participant(keyPair);
     }
