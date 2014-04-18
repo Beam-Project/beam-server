@@ -35,11 +35,11 @@ public class App {
 
     static ConfigWriter configWriter;
     static Config config;
-    static Participant participant;
+    static Participant server;
 
     static {
         loadConfig();
-        loadParticipant();
+        loadServer();
     }
 
     private static void loadConfig() {
@@ -47,11 +47,11 @@ public class App {
         config = ConfigFactory.create(Config.class);
     }
 
-    private static void loadParticipant() {
+    private static void loadServer() {
         if (isEncryptedKeyPairStored()) {
-            readAndDecryptParticipantFromConfig();
+            readAndDecryptServerFromConfig();
         } else {
-            generateParticipant();
+            generateServer();
             storeConfig();
         }
     }
@@ -60,23 +60,22 @@ public class App {
         return config.encryptedPublicKey() != null && config.encryptedPrivateKey() != null;
     }
 
-    private static void readAndDecryptParticipantFromConfig() {
+    private static void readAndDecryptServerFromConfig() {
         EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(config.encryptedPublicKey(), config.encryptedPrivateKey(), config.keyPairSalt());
         KeyPair keyPair = KeyPairCryptor.decrypt(config.keyPairPassword(), encryptedKeyPair);
-        participant = new Participant(keyPair);
+        server = new Participant(keyPair);
     }
 
-    private static void generateParticipant() {
-        participant = new Participant(EccKeyPairGenerator.generate());
-
-        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(config.keyPairPassword(), participant.getKeyPair());
+    private static void generateServer() {
+        server = new Participant(EccKeyPairGenerator.generate());
+        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(config.keyPairPassword(), server.getKeyPair());
         config.setProperty("keyPairSalt", encryptedKeyPair.getSalt());
         config.setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
         config.setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
     }
 
-    public static Participant getParticipant() {
-        return participant;
+    public static Participant getServer() {
+        return server;
     }
 
     public static void storeConfig() {
