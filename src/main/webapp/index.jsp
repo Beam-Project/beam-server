@@ -17,8 +17,8 @@
             <h1>beam-server</h1>
             <p>You can send Beam messages via this server to communicate privately.</p>
             <p>The public key is:</p>
-            <p><code><%= App.getParticipant().getPublicKeyAsBase58()%></code></p>
-            <p>You can also just click the link: <a href="<%= UrlAssembler.toUrlByServer(App.getParticipant())%>">beam-server</a></p>
+            <p><code><%= App.getServer().getPublicKeyAsBase58()%></code></p>
+            <p>You can also just click the link: <a href="<%= UrlAssembler.toUrlByServer(App.getServer())%>">beam-server</a></p>
 
             <p>Interact with this server via the following paths and methods:</p>
             <ul>
