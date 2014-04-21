@@ -27,7 +27,7 @@ import org.beamproject.common.util.ConfigBase;
  *
  * @see ConfigBase
  */
-@Sources({"file:~/.beam/server.conf"})
+@Sources({"file:~/.beam/server.conf${developmentExtension}"})
 public interface Config extends ConfigBase {
 
     public final static String FOLDER = System.getProperty("user.home") + "/.beam/";

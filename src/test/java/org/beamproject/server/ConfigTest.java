@@ -19,41 +19,19 @@
 package org.beamproject.server;
 
 import org.aeonbits.owner.ConfigFactory;
-import org.beamproject.common.util.ConfigWriter;
 
-/**
- * This class initializes the server and holds {@link Config} and {@link Model}.
- */
-public class App {
+public class ConfigTest {
 
-    protected static ConfigWriter configWriter;
-    protected static Config config;
-    protected static Model model;
-
-    static {
-        loadConfig();
-        loadModel();
-    }
-
-    private static void loadConfig() {
-        configWriter = new ConfigWriter();
-        config = ConfigFactory.create(Config.class);
-    }
-
-    private static void loadModel() {
-        model = new Model();
-    }
-
-    public static Config getConfig() {
-        return config;
-    }
-
-    public static Model getModel() {
-        return model;
-    }
-
-    public static void storeConfig() {
-        configWriter.writeConfig(config, Config.FOLDER, Config.FILE);
+    /**
+     * Loads the {@link Config} and puts it into the {@link App} for global
+     * access. It is configured that it never reads from possibly existing local
+     * config files.
+     * <p>
+     * This does not prevent form any possible writings!
+     */
+    public static void loadDefaultConfig() {
+        ConfigFactory.setProperty("developmentExtension", "INVALID-PATH");
+        AppTest.setAppConfig(ConfigFactory.create(Config.class));
     }
 
 }

@@ -62,7 +62,7 @@ public class DeliveryPage extends HttpServlet {
 
     private void decryptAndUnpack() {
         CryptoPacker packer = new CryptoPacker();
-        message = packer.decryptAndUnpack(ciphertext, App.getServer());
+        message = packer.decryptAndUnpack(ciphertext, App.getModel().getServer());
     }
 
     private void sendResponse(HttpServletResponse response) throws IOException {
