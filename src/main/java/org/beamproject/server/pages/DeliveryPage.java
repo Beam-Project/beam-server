@@ -18,95 +18,19 @@
  */
 package org.beamproject.server.pages;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.beamproject.common.Message;
-import org.beamproject.common.MessageField;
-import org.beamproject.common.crypto.CryptoPacker;
-import org.beamproject.common.util.Base64;
-import org.beamproject.server.App;
 
 /**
- * This servlet takes incoming messages and processes them.
+ * This servlet processes incoming messages.
  */
 @WebServlet(urlPatterns = {"/deliver"})
-public class DeliveryPage extends HttpServlet {
+public class DeliveryPage extends Page {
 
     private static final long serialVersionUID = 1L;
-    public final static String CONTENT_TYPE = "text/html;charset=UTF-8";
-    public final static String GET_MESSAGE_PARAMETER = "value";
-    byte[] ciphertext;
-    Message message;
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String base64Message = request.getParameter(GET_MESSAGE_PARAMETER);
-        ciphertext = Base64.decode(base64Message);
-        decryptAndUnpack();
-
-        sendResponse(response);
-    }
-
-    private void decryptAndUnpack() {
-        CryptoPacker packer = new CryptoPacker();
-        message = packer.decryptAndUnpack(ciphertext, App.getModel().getServer());
-    }
-
-    private void sendResponse(HttpServletResponse response) throws IOException {
-        response.setContentType(CONTENT_TYPE);
-        response.setStatus(HttpServletResponse.SC_ACCEPTED);
-        System.out.println("IN: " + new String(message.getContent().get(MessageField.CNT_MSG.toString())));
-
-        try (PrintWriter out = response.getWriter()) {
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet deliver</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>It works!</h1><p>Msg:" + new String(message.getContent().get(MessageField.CNT_MSG.toString())) + " </p>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        processRequest(request, response);
-    }
+    protected void processMessage() {
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        processRequest(request, response);
     }
 
 }
