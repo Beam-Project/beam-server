@@ -19,15 +19,22 @@
 package org.beamproject.server.pages;
 
 import java.io.IOException;
+import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import static javax.servlet.http.HttpServletResponse.*;
 import org.beamproject.common.Message;
 import static org.beamproject.common.MessageField.*;
+import org.beamproject.common.Participant;
+import org.beamproject.common.crypto.CryptoException;
 import org.beamproject.common.crypto.CryptoPacker;
+import org.beamproject.common.crypto.PackerException;
 import org.beamproject.common.util.Base64;
+import org.beamproject.server.App;
 import static org.beamproject.server.App.getModel;
+import org.msgpack.MessageTypeException;
 
 /**
  * This is a basic page that can be extended to concrete pages.
@@ -42,6 +49,7 @@ public abstract class Page extends HttpServlet {
     protected final static String GET_MESSAGE_PARAMETER = "value";
     protected CryptoPacker packer = new CryptoPacker();
     protected Message message;
+    private int responseStatusCode;
 
     @Override
     final protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -54,9 +62,19 @@ public abstract class Page extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        decryptAndUnpack(request);
-        processMessage();
-        sendResponse(response);
+        try {
+            decryptAndUnpack(request);
+        } catch (IllegalArgumentException | PackerException | MessageTypeException | CryptoException ex) {
+            sendResponse(response, SC_BAD_REQUEST);
+            return;
+        }
+
+        if (isMessageValid()) {
+            processMessage();
+            sendResponse(response, SC_OK);
+        } else {
+            sendResponse(response, SC_BAD_REQUEST);
+        }
     }
 
     private void decryptAndUnpack(HttpServletRequest request) {
@@ -66,15 +84,30 @@ public abstract class Page extends HttpServlet {
         message = packer.decryptAndUnpack(ciphertext, getModel().getServer());
     }
 
+    private boolean isMessageValid() {
+        return message != null
+                && Message.VERSION.equals(message.getVersion())
+                && arePublicKeysEquals(App.getModel().getServer(), message.getRecipient())
+                && message.getContent() != null
+                && !message.getContent().isEmpty()
+                && message.getContent(CNT_MSG) != null
+                && message.getContent(CNT_MSG).length > 0;
+    }
+
+    private boolean arePublicKeysEquals(Participant first, Participant second) {
+        return first.getPublicKeyAsBytes() != null
+                && second.getPublicKeyAsBytes() != null
+                && Arrays.equals(first.getPublicKeyAsBytes(), second.getPublicKeyAsBytes());
+    }
+
     /**
      * This method processes the received {@link Message}.
      */
     abstract protected void processMessage();
 
-    private void sendResponse(HttpServletResponse response) throws IOException {
+    private void sendResponse(HttpServletResponse response, int statusCode) throws IOException {
         response.setContentType(CONTENT_TYPE);
-        response.setStatus(HttpServletResponse.SC_ACCEPTED);
-        System.out.println("IN: " + new String(message.getContent(CNT_MSG)));
+        response.setStatus(statusCode);
     }
 
 }

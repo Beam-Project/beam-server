@@ -20,7 +20,6 @@ package org.beamproject.server.pages;
 
 import java.io.IOException;
 import static org.beamproject.common.MessageField.CNT_MSG;
-import org.junit.After;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,13 +33,6 @@ public class DeliveryPageTest extends PageTest {
     public void setDeliveryPageUp() {
         page = new DeliveryPage();
         basicSetup(page);
-    }
-
-    @After
-    public void printStatus() {
-        if (response != null) {
-            System.out.println("Status: " + response.getResponseCode() + " " + response.getResponseMessage());
-        }
     }
 
     @Test
