@@ -23,7 +23,7 @@ import javax.servlet.annotation.WebServlet;
 /**
  * This servlet processes incoming messages.
  */
-@WebServlet(urlPatterns = {"/deliver"})
+@WebServlet(urlPatterns = {"/delivery"})
 public class DeliveryPage extends Page {
 
     private static final long serialVersionUID = 1L;
