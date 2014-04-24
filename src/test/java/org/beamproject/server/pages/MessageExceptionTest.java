@@ -20,34 +20,17 @@ package org.beamproject.server.pages;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static org.beamproject.server.pages.MessageException.ErrorCode.*;
 
 public class MessageExceptionTest {
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorOnNulls() {
-        new MessageException(null, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorOnNullErrorCode() {
-        new MessageException(null, "hello");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorOnNullMessage() {
-        new MessageException(ERROR, null);
-    }
 
     @Test
     public void testConstructorOnAssignment() {
         String message = "hello";
 
         try {
-            throw new MessageException(ERROR, message);
+            throw new MessageException(message);
         } catch (MessageException ex) {
             assertEquals(message, ex.getMessage());
-            assertEquals(ERROR, ex.getErrorCode());
         }
 
     }
