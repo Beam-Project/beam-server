@@ -20,7 +20,6 @@ package org.beamproject.server.pages;
 
 import java.io.IOException;
 import static org.beamproject.common.MessageField.CNT_MSG;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -33,11 +32,6 @@ public class DeliveryPageTest extends PageTest {
     public void setDeliveryPageUp() {
         page = new DeliveryPage();
         basicSetup(page);
-    }
-
-    @Test
-    public void testDeliveryPageConstructor() {
-        assertNotNull(page.packer);
     }
 
     @Test
