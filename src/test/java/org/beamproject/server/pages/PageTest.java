@@ -38,8 +38,8 @@ import org.xml.sax.SAXException;
 
 public class PageTest {
 
-    private final String PATH_BASE = "http://localhost:8080/";
-    private final String SERVLET = "servlet";
+    protected final String PATH_BASE = "http://localhost:8080/";
+    protected final String SERVLET = "servlet";
     private ServletRunner runner;
     protected ServletUnitClient client;
     protected WebRequest request;
