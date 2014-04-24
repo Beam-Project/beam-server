@@ -28,11 +28,12 @@ public class App {
 
     protected static ConfigWriter configWriter;
     protected static Config config;
+    protected static Controller controller;
     protected static Model model;
 
     static {
         loadConfig();
-        loadModel();
+        loadControllerAndModel();
     }
 
     private static void loadConfig() {
@@ -40,12 +41,17 @@ public class App {
         config = ConfigFactory.create(Config.class);
     }
 
-    private static void loadModel() {
+    private static void loadControllerAndModel() {
+        controller = new Controller();
         model = new Model();
     }
 
     public static Config getConfig() {
         return config;
+    }
+
+    public static Controller getController() {
+        return controller;
     }
 
     public static Model getModel() {

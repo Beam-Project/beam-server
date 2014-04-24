@@ -27,6 +27,7 @@ import org.junit.Test;
 public class AppTest {
 
     private ConfigWriter writer;
+    private Controller controller;
     private Model model;
 
     @Before
@@ -39,6 +40,7 @@ public class AppTest {
     @Test
     public void testInitBlock() {
         assertNotNull(App.configWriter);
+        assertNotNull(App.controller);
         assertNotNull(App.model);
     }
 
@@ -49,6 +51,16 @@ public class AppTest {
 
         ConfigTest.loadDefaultConfig();
         assertSame(App.config, App.getConfig());
+    }
+
+    @Test
+    public void testGetController() {
+        App.controller = null;
+        assertNull(App.getController());
+
+        controller = new Controller();
+        App.controller = controller;
+        assertSame(controller, App.getController());
     }
 
     @Test
@@ -90,6 +102,16 @@ public class AppTest {
      */
     public static void setAppConfigWriter(ConfigWriter configWriter) {
         App.configWriter = configWriter;
+    }
+
+    /**
+     * Overwrites the existing {@link Controller} in {@link App} for unit
+     * testing purposes.
+     *
+     * @param controller The new controller.
+     */
+    public static void setAppController(Controller controller) {
+        App.controller = controller;
     }
 
     /**
