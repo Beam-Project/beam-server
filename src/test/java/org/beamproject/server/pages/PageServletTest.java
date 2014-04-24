@@ -18,13 +18,11 @@
  */
 package org.beamproject.server.pages;
 
-import com.meterware.httpunit.HttpException;
 import java.io.IOException;
 import static java.net.HttpURLConnection.*;
 import static org.beamproject.common.MessageField.*;
 import org.beamproject.common.Participant;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -41,26 +39,26 @@ public class PageServletTest extends PageTest {
 
     @Test
     public void testOnEmptyRequest() {
-        sendResponseAndCatchException(HTTP_BAD_REQUEST);
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
 
     @Test
     public void testOnEmptyValue() {
         request.setParameter(Page.MESSAGE_PARAMETER, "");
-        sendResponseAndCatchException(HTTP_BAD_REQUEST);
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
 
     @Test
     public void testOnShortValues() {
         for (int i = 0; i < 10000; i += 100) {
             request.setParameter(Page.MESSAGE_PARAMETER, "" + i);
-            sendResponseAndCatchException(HTTP_BAD_REQUEST);
+            sendRequestAndCatchException(HTTP_BAD_REQUEST);
         }
 
         String value = "";
         for (int i = 0; i < 500; i++) {
             request.setParameter(Page.MESSAGE_PARAMETER, value);
-            sendResponseAndCatchException(HTTP_BAD_REQUEST);
+            sendRequestAndCatchException(HTTP_BAD_REQUEST);
             value += (char) (i % 128); // Try all ASCII values 
         }
     }
@@ -68,13 +66,13 @@ public class PageServletTest extends PageTest {
     @Test
     public void testOnEmptyMessage() {
         setMessageToRequest();
-        sendResponseAndCatchException(HTTP_BAD_REQUEST);
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
 
     @Test
     public void testOnMessageWithOnlyVersion() {
         setMessageToRequest();
-        sendResponseAndCatchException(HTTP_BAD_REQUEST);
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
 
     @Test
@@ -82,7 +80,7 @@ public class PageServletTest extends PageTest {
         message.setVersion("2.7182");
         message.putContent(CNT_MSG, "hello".getBytes());
         setMessageToRequest();
-        sendResponseAndCatchException(HTTP_BAD_REQUEST);
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
 
     @Test
@@ -90,7 +88,7 @@ public class PageServletTest extends PageTest {
         message.setVersion("");
         message.putContent(CNT_MSG, "hello".getBytes());
         setMessageToRequest();
-        sendResponseAndCatchException(HTTP_BAD_REQUEST);
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
 
     @Test
@@ -98,24 +96,13 @@ public class PageServletTest extends PageTest {
         message.setRecipient(Participant.generate());
         message.putContent(CNT_MSG, "hello".getBytes());
         setMessageToRequest();
-        sendResponseAndCatchException(HTTP_BAD_REQUEST);
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
 
     @Test
     public void testOnMessageWithoutContent() {
         setMessageToRequest();
-        sendResponseAndCatchException(HTTP_BAD_REQUEST);
-    }
-
-    private void sendResponseAndCatchException(int statusCode) {
-        try {
-            response = client.getResponse(request);
-            fail("This should have thrown an exception.");
-        } catch (HttpException ex) {
-            assertEquals(statusCode, ex.getResponseCode());
-        } catch (IOException | SAXException ex) {
-            fail("Unexpected exception: " + ex.getMessage());
-        }
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
 
     @Test
