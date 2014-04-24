@@ -33,6 +33,7 @@ public class Model {
 
     Participant server;
     ConcurrentHashMap<Participant, HandshakeResponse> activeHandshakes = new ConcurrentHashMap<>();
+    ConcurrentHashMap<byte[], Session> activeSessions = new ConcurrentHashMap<>();
 
     /**
      * Gets the server, if loaded or loads it, if existing or creates and stores
@@ -110,5 +111,52 @@ public class Model {
         Exceptions.verifyArgumentsNotNull(user);
 
         activeHandshakes.remove(user);
+    }
+
+    /**
+     * Adds a {@link Session} to this {@link Model}. If already as
+     * {@link Session} with the given key exists, it will be overwritten.
+     *
+     * @param user The user who holds the session.
+     * @param sessionKey The key of the session.
+     * @throws IllegalArgumentException If at least one argument is null.
+     */
+    public void addSession(Participant user, byte[] sessionKey) {
+        Exceptions.verifyArgumentsNotNull(user, sessionKey);
+
+        activeSessions.put(sessionKey, new Session(user, sessionKey));
+    }
+
+    /**
+     * Gets the {@link Session} for the given session key.
+     *
+     * @param sessionKey The key of the session.
+     * @return The associated {@link Session}.
+     * @throws IllegalArgumentException If the argument is null.
+     * @throws IllegalStateException If no session can be found the given key.
+     */
+    public Session getSessionByKey(byte[] sessionKey) {
+        Exceptions.verifyArgumentsNotNull(sessionKey);
+
+        if (!activeSessions.containsKey(sessionKey)) {
+            throw new IllegalStateException("The given key was not found. The existence should be checked first.");
+        }
+
+        return activeSessions.get(sessionKey);
+    }
+
+    /**
+     * Tells if a {@link Session}, represented by the given key, is stored in
+     * this {@link Model}.
+     *
+     * @param sessionKey The session to look for.
+     * @return true, when a {@link Session} can be found with the given key,
+     * false otherwise.
+     * @throws IllegalArgumentException If the argument is null.
+     */
+    public boolean isSessionExistingByKey(byte[] sessionKey) {
+        Exceptions.verifyArgumentsNotNull(sessionKey);
+
+        return activeSessions.containsKey(sessionKey);
     }
 }

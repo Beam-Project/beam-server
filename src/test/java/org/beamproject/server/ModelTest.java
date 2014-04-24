@@ -33,10 +33,11 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 
 public class ModelTest {
-
+    
+    private final byte[] SESSION_KEY = "my key".getBytes();
     private ConfigWriter writer;
     private Model model;
-
+    
     @Before
     public void setUp() {
         ConfigTest.loadDefaultConfig();
@@ -44,27 +45,28 @@ public class ModelTest {
         AppTest.setAppConfigWriter(writer);
         model = new Model();
     }
-
+    
     @Test
     public void testConstructor() {
         assertNotNull(model.activeHandshakes);
+        assertNotNull(model.activeSessions);
     }
-
+    
     @Test
     public void testGetServerWhenNotExisting() {
         writer.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
         expectLastCall();
         replay(writer);
-
+        
         App.getConfig().removeProperty("encryptedServerPublicKey");
         assertNull(model.server);
         assertNotNull(model.getServer());
         assertNotNull(model.server);
         assertSame(model.server, model.getServer());
-
+        
         verify(writer);
     }
-
+    
     @Test
     public void testGetServerWhenExistingInConfig() {
         Participant server = Participant.generate();
@@ -72,12 +74,12 @@ public class ModelTest {
         getConfig().setProperty("keyPairSalt", encryptedKeyPair.getSalt());
         getConfig().setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
         getConfig().setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
-
+        
         assertNull(model.server);
         assertEquals(server, model.getServer());
         assertEquals(server, model.server);
     }
-
+    
     @Test
     public void testIsEncryptedKeyPairStored() {
         assertFalse(model.isEncryptedKeyPairStored());
@@ -86,60 +88,115 @@ public class ModelTest {
         getConfig().setProperty("encryptedPrivateKey", "privkey");
         assertTrue(model.isEncryptedKeyPairStored());
     }
-
+    
     @Test(expected = IllegalArgumentException.class)
     public void testGetHandshakeResponseByUserOnNull() {
         model.getHandshakeResponseByUser(null);
     }
-
+    
     @Test
     public void testGetHandshakeResponseByUserOnNewHandshake() {
         model.server = Participant.generate();
         Participant user = Participant.generate();
+        
         assertFalse(model.activeHandshakes.contains(user));
-
         HandshakeResponse handshake = model.getHandshakeResponseByUser(user);
-
         assertSame(handshake, model.activeHandshakes.get(user));
         assertSame(handshake, model.getHandshakeResponseByUser(user));
     }
-
+    
     @Test
     public void testGetHandshakeResponseByUserOnExistingHandshake() {
         model.server = Participant.generate();
         Participant user = Participant.generate();
         HandshakeResponse handshakeResponse = new HandshakeResponse(model.server);
         model.activeHandshakes.put(user, handshakeResponse);
-
+        
         assertEquals(1, model.activeHandshakes.size());
         assertEquals(handshakeResponse, model.getHandshakeResponseByUser(user));
         assertEquals(1, model.activeHandshakes.size());
     }
-
+    
     @Test(expected = IllegalArgumentException.class)
     public void testDestroyHandshakeResponseByUserOnNull() {
         model.destroyHandshakeResponseByUser(null);
     }
-
+    
     @Test
     public void testDestroyHandshakeResponseByUserOnNewHandshake() {
         Participant user = Participant.generate();
         
-        assertFalse(model.activeHandshakes.contains(user));
+        assertFalse(model.activeHandshakes.containsKey(user));
         model.destroyHandshakeResponseByUser(user);
         assertFalse(model.activeHandshakes.containsKey(user));
     }
-
+    
     @Test
     public void testDestroyHandshakeResponseByUserOnExistingHandshake() {
         model.server = Participant.generate();
         Participant user = Participant.generate();
         HandshakeResponse handshakeResponse = new HandshakeResponse(model.server);
         model.activeHandshakes.put(user, handshakeResponse);
-
+        
         assertEquals(1, model.activeHandshakes.size());
         model.destroyHandshakeResponseByUser(user);
         assertEquals(0, model.activeHandshakes.size());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddSessionOnNulls() {
+        model.addSession(null, null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddSessionOnNullUser() {
+        model.addSession(null, SESSION_KEY);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddSessionOnNullSessionKey() {
+        model.addSession(Participant.generate(), null);
+    }
+    
+    @Test
+    public void testAddSession() {
+        Participant user = Participant.generate();
+        
+        assertFalse(model.activeSessions.containsKey(SESSION_KEY));
+        model.addSession(user, SESSION_KEY);
+        assertTrue(model.activeSessions.containsKey(SESSION_KEY));
+        Session session = model.activeSessions.get(SESSION_KEY);
+        assertEquals(user, session.getUser());
+        assertArrayEquals(SESSION_KEY, session.getKey());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetSessionByKeyOnNull() {
+        model.getSessionByKey(null);
+    }
+    
+    @Test(expected = IllegalStateException.class)
+    public void testGetSessionByKeyOnMissingSession() {
+        model.getSessionByKey(SESSION_KEY);
+    }
+    
+    @Test
+    public void testGetSessionByKey() {
+        Session session = new Session(Participant.generate(), SESSION_KEY);
+        model.activeSessions.put(SESSION_KEY, session);
+        assertSame(session, model.getSessionByKey(SESSION_KEY));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testIsSessionExistingByKeyOnNull() {
+        model.isSessionExistingByKey(null);
+    }
+    
+    @Test
+    public void testIsSessionExistingByKey() {
+        assertFalse(model.isSessionExistingByKey(SESSION_KEY));
+        model.addSession(Participant.generate(), SESSION_KEY);
+        assertTrue(model.isSessionExistingByKey(SESSION_KEY));
     }
 
     /**
@@ -152,5 +209,5 @@ public class ModelTest {
     public static void setServer(Participant server, Model model) {
         model.server = server;
     }
-
+    
 }
