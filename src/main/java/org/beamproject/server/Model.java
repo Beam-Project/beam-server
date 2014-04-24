@@ -28,12 +28,13 @@ import org.beamproject.common.util.Base58;
 import org.beamproject.common.util.Exceptions;
 import static org.beamproject.server.App.getConfig;
 import static org.beamproject.server.App.storeConfig;
+import org.beamproject.server.util.ComparableBytes;
 
 public class Model {
 
     Participant server;
     ConcurrentHashMap<Participant, HandshakeResponse> activeHandshakes = new ConcurrentHashMap<>();
-    ConcurrentHashMap<byte[], Session> activeSessions = new ConcurrentHashMap<>();
+    ConcurrentHashMap<ComparableBytes, Session> activeSessions = new ConcurrentHashMap<>();
 
     /**
      * Gets the server, if loaded or loads it, if existing or creates and stores
@@ -124,7 +125,7 @@ public class Model {
     public void addSession(Participant user, byte[] sessionKey) {
         Exceptions.verifyArgumentsNotNull(user, sessionKey);
 
-        activeSessions.put(sessionKey, new Session(user, sessionKey));
+        activeSessions.put(new ComparableBytes(sessionKey), new Session(user, sessionKey));
     }
 
     /**
@@ -138,11 +139,11 @@ public class Model {
     public Session getSessionByKey(byte[] sessionKey) {
         Exceptions.verifyArgumentsNotNull(sessionKey);
 
-        if (!activeSessions.containsKey(sessionKey)) {
+        if (!activeSessions.containsKey(new ComparableBytes(sessionKey))) {
             throw new IllegalStateException("The given key was not found. The existence should be checked first.");
         }
 
-        return activeSessions.get(sessionKey);
+        return activeSessions.get(new ComparableBytes(sessionKey));
     }
 
     /**
@@ -157,6 +158,6 @@ public class Model {
     public boolean isSessionExistingByKey(byte[] sessionKey) {
         Exceptions.verifyArgumentsNotNull(sessionKey);
 
-        return activeSessions.containsKey(sessionKey);
+        return activeSessions.containsKey(new ComparableBytes(sessionKey));
     }
 }
