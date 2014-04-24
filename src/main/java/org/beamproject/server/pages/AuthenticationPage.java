@@ -27,22 +27,22 @@ import org.beamproject.common.crypto.HandshakeResponder;
 import org.beamproject.server.App;
 
 /**
- * This servlet allows to establish authentication between a client and this
- * server.
+ * This servlet allows to establish authentication between a user respectively
+ * client and this server.
  */
 @WebServlet(urlPatterns = {"/authentication"})
 public class AuthenticationPage extends Page {
 
     private static final long serialVersionUID = 1L;
     private Phase currentPhase;
-    private HandshakeResponder handshakeResponder;
+    private HandshakeResponder responder;
 
     @Override
     protected void processMessage() {
         Participant user = message.getRecipient();
 
         verifyEssentialFields();
-        handshakeResponder = App.getModel().getHandshakeResponseByUser(user);
+        responder = App.getModel().getHandshakeResponseByUser(user);
 
         switch (currentPhase) {
             case CHALLENGE:
@@ -73,8 +73,8 @@ public class AuthenticationPage extends Page {
 
     private void consumeChallengeAndResponse() {
         try {
-            handshakeResponder.consumeChallenge(message);
-            responseMessage = handshakeResponder.produceResponse();
+            responder.consumeChallenge(message);
+            responseMessage = responder.produceResponse();
         } catch (IllegalStateException | HandshakeException ex) {
             throw new MessageException("The message could not be processed: " + ex.getMessage());
         }
@@ -82,14 +82,14 @@ public class AuthenticationPage extends Page {
 
     private void consumeSuccess() {
         try {
-            handshakeResponder.consumeSuccess(message);
+            responder.consumeSuccess(message);
         } catch (IllegalStateException | HandshakeException ex) {
             throw new MessageException("The message could not be processed: " + ex.getMessage());
         }
     }
 
     private void storeUserToSessionKey() {
-        App.getModel().addSession(handshakeResponder.getRemoteParticipant(), handshakeResponder.getSessionKey());
+        App.getModel().addSession(responder.getRemoteParticipant(), responder.getSessionKey());
     }
 
     private void destroyHandshake() {
