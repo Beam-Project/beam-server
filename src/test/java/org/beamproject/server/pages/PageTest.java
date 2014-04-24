@@ -60,7 +60,7 @@ public class PageTest {
 
     protected void setMessageToRequest() {
         byte[] ciphertext = packer.packAndEncrypt(message);
-        request.setParameter(Page.GET_MESSAGE_PARAMETER, Base64.encode(ciphertext));
+        request.setParameter(Page.MESSAGE_PARAMETER, Base64.encode(ciphertext));
     }
 
 }

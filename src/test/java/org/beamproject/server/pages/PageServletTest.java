@@ -46,20 +46,20 @@ public class PageServletTest extends PageTest {
 
     @Test
     public void testOnEmptyValue() {
-        request.setParameter(Page.GET_MESSAGE_PARAMETER, "");
+        request.setParameter(Page.MESSAGE_PARAMETER, "");
         sendResponseAndCatchException(HTTP_BAD_REQUEST);
     }
 
     @Test
     public void testOnShortValues() {
         for (int i = 0; i < 10000; i += 100) {
-            request.setParameter(Page.GET_MESSAGE_PARAMETER, "" + i);
+            request.setParameter(Page.MESSAGE_PARAMETER, "" + i);
             sendResponseAndCatchException(HTTP_BAD_REQUEST);
         }
 
         String value = "";
         for (int i = 0; i < 500; i++) {
-            request.setParameter(Page.GET_MESSAGE_PARAMETER, value);
+            request.setParameter(Page.MESSAGE_PARAMETER, value);
             sendResponseAndCatchException(HTTP_BAD_REQUEST);
             value += (char) (i % 128); // Try all ASCII values 
         }

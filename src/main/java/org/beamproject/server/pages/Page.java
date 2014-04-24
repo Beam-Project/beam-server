@@ -46,10 +46,9 @@ public abstract class Page extends HttpServlet {
 
     private final static long serialVersionUID = 1L;
     private final static String CONTENT_TYPE = "text/html;charset=UTF-8";
-    protected final static String GET_MESSAGE_PARAMETER = "value";
+    protected final static String MESSAGE_PARAMETER = "value";
     protected CryptoPacker packer = new CryptoPacker();
     protected Message message;
-    private int responseStatusCode;
 
     @Override
     final protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -78,7 +77,7 @@ public abstract class Page extends HttpServlet {
     }
 
     private void decryptAndUnpack(HttpServletRequest request) {
-        String base64Message = request.getParameter(GET_MESSAGE_PARAMETER);
+        String base64Message = request.getParameter(MESSAGE_PARAMETER);
         byte[] ciphertext = Base64.decode(base64Message);
 
         message = packer.decryptAndUnpack(ciphertext, getModel().getServer());
