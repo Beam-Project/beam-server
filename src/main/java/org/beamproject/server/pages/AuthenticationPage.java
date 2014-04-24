@@ -19,7 +19,7 @@
 package org.beamproject.server.pages;
 
 import javax.servlet.annotation.WebServlet;
-import static org.beamproject.common.MessageField.*;
+import static org.beamproject.common.MessageField.ContentField.*;
 import org.beamproject.common.Participant;
 import static org.beamproject.common.crypto.Handshake.*;
 import org.beamproject.common.crypto.HandshakeException;
@@ -60,12 +60,12 @@ public class AuthenticationPage extends Page {
     }
 
     private void verifyEssentialFields() {
-        if (!message.containsContent(CNT_CRPHASE)) {
-            throw new MessageException("The message does not contain the required field " + CNT_CRPHASE + ".");
+        if (!message.containsContent(CRPHASE)) {
+            throw new MessageException("The message does not contain the required field " + CRPHASE + ".");
         }
 
         try {
-            currentPhase = Phase.valueOf(message.getContent(CNT_CRPHASE));
+            currentPhase = Phase.valueOf(message.getContent(CRPHASE));
         } catch (IllegalArgumentException ex) {
             throw new MessageException("The given Phase is not valid: " + ex.getMessage());
         }

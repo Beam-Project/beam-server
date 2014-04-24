@@ -20,7 +20,7 @@ package org.beamproject.server.pages;
 
 import java.io.IOException;
 import static java.net.HttpURLConnection.*;
-import static org.beamproject.common.MessageField.*;
+import static org.beamproject.common.MessageField.ContentField.*;
 import org.beamproject.common.Participant;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -78,7 +78,7 @@ public class PageServletTest extends PageTest {
     @Test
     public void testOnMessageWithWrongVersion() {
         message.setVersion("2.7182");
-        message.putContent(CNT_MSG, "hello".getBytes());
+        message.putContent(MSG, "hello".getBytes());
         setMessageToRequest();
         sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
@@ -86,7 +86,7 @@ public class PageServletTest extends PageTest {
     @Test
     public void testOnMessageWithEmptyVersion() {
         message.setVersion("");
-        message.putContent(CNT_MSG, "hello".getBytes());
+        message.putContent(MSG, "hello".getBytes());
         setMessageToRequest();
         sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
@@ -94,7 +94,7 @@ public class PageServletTest extends PageTest {
     @Test
     public void testOnMessageWithWrongRecipient() {
         message.setRecipient(Participant.generate());
-        message.putContent(CNT_MSG, "hello".getBytes());
+        message.putContent(MSG, "hello".getBytes());
         setMessageToRequest();
         sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
@@ -107,7 +107,7 @@ public class PageServletTest extends PageTest {
 
     @Test
     public void testOnCorrectMessage() throws IOException, SAXException {
-        message.putContent(CNT_MSG, "hello".getBytes());
+        message.putContent(MSG, "hello".getBytes());
         setMessageToRequest();
         response = client.getResponse(request);
         assertEquals(HTTP_OK, response.getResponseCode());

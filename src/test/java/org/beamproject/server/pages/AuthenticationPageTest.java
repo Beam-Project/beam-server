@@ -20,7 +20,7 @@ package org.beamproject.server.pages;
 
 import static java.net.HttpURLConnection.*;
 import org.beamproject.common.Message;
-import static org.beamproject.common.MessageField.*;
+import static org.beamproject.common.MessageField.ContentField.*;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.server.App;
 import org.beamproject.server.Session;
@@ -43,7 +43,7 @@ public class AuthenticationPageTest extends PageTest {
     @Test
     public void testChallengeOnMissingPhase() {
         message = challenger.produceChallenge(server);
-        message.getContent().remove(CNT_CRPHASE.toString());
+        message.getContent().remove(CRPHASE.toString());
         setMessageToRequest();
         sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
@@ -51,7 +51,7 @@ public class AuthenticationPageTest extends PageTest {
     @Test
     public void testChallengeOnMissingNonce() {
         message = challenger.produceChallenge(server);
-        message.getContent().remove(CNT_CRNONCE.toString());
+        message.getContent().remove(CRNONCE.toString());
         setMessageToRequest();
         sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
@@ -59,7 +59,7 @@ public class AuthenticationPageTest extends PageTest {
     @Test
     public void testChallengeOnMissingPublicKey() {
         message = challenger.produceChallenge(server);
-        message.getContent().remove(CNT_CRPUBKEY.toString());
+        message.getContent().remove(CRPUBKEY.toString());
         setMessageToRequest();
         sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
