@@ -100,8 +100,8 @@ public class ModelTest {
 
         HandshakeResponse handshake = model.getHandshakeResponseByUser(user);
 
-        assertTrue(model.activeHandshakes.containsKey(user));
-        assertEquals(handshake, model.activeHandshakes.get(user));
+        assertSame(handshake, model.activeHandshakes.get(user));
+        assertSame(handshake, model.getHandshakeResponseByUser(user));
     }
 
     @Test
@@ -112,8 +112,34 @@ public class ModelTest {
         model.activeHandshakes.put(user, handshakeResponse);
 
         assertEquals(1, model.activeHandshakes.size());
-        assertEquals(handshakeResponse, model.activeHandshakes.get(user));
+        assertEquals(handshakeResponse, model.getHandshakeResponseByUser(user));
         assertEquals(1, model.activeHandshakes.size());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDestroyHandshakeResponseByUserOnNull() {
+        model.destroyHandshakeResponseByUser(null);
+    }
+
+    @Test
+    public void testDestroyHandshakeResponseByUserOnNewHandshake() {
+        Participant user = Participant.generate();
+        
+        assertFalse(model.activeHandshakes.contains(user));
+        model.destroyHandshakeResponseByUser(user);
+        assertFalse(model.activeHandshakes.containsKey(user));
+    }
+
+    @Test
+    public void testDestroyHandshakeResponseByUserOnExistingHandshake() {
+        model.server = Participant.generate();
+        Participant user = Participant.generate();
+        HandshakeResponse handshakeResponse = new HandshakeResponse(model.server);
+        model.activeHandshakes.put(user, handshakeResponse);
+
+        assertEquals(1, model.activeHandshakes.size());
+        model.destroyHandshakeResponseByUser(user);
+        assertEquals(0, model.activeHandshakes.size());
     }
 
     /**

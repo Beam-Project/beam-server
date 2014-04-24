@@ -88,11 +88,27 @@ public class Model {
     public HandshakeResponse getHandshakeResponseByUser(Participant user) {
         Exceptions.verifyArgumentsNotNull(user);
 
-        if (activeHandshakes.contains(user)) {
+        if (activeHandshakes.containsKey(user)) {
             return activeHandshakes.get(user);
         } else {
             activeHandshakes.put(user, new HandshakeResponse(server));
             return activeHandshakes.get(user);
         }
+    }
+
+    /**
+     * Removes a active {@link HandshakeResponse} of the given user, if there is
+     * one.
+     * <p>
+     * If the authentication procedure was active before, the existing instance
+     * is returned.
+     *
+     * @param user The user, who is involved in this handshake.
+     * @throws IllegalArgumentException If the argument is null.
+     */
+    public void destroyHandshakeResponseByUser(Participant user) {
+        Exceptions.verifyArgumentsNotNull(user);
+
+        activeHandshakes.remove(user);
     }
 }
