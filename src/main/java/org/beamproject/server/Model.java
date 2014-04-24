@@ -19,16 +19,20 @@
 package org.beamproject.server;
 
 import java.security.KeyPair;
+import java.util.concurrent.ConcurrentHashMap;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.EncryptedKeyPair;
+import org.beamproject.common.crypto.HandshakeResponse;
 import org.beamproject.common.crypto.KeyPairCryptor;
 import org.beamproject.common.util.Base58;
+import org.beamproject.common.util.Exceptions;
 import static org.beamproject.server.App.getConfig;
 import static org.beamproject.server.App.storeConfig;
 
 public class Model {
 
     Participant server;
+    ConcurrentHashMap<Participant, HandshakeResponse> activeHandshakes = new ConcurrentHashMap<>();
 
     /**
      * Gets the server, if loaded or loads it, if existing or creates and stores
@@ -66,5 +70,16 @@ public class Model {
         EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(publicKey, privateKey, salt);
         KeyPair keyPair = KeyPairCryptor.decrypt(getConfig().keyPairPassword(), encryptedKeyPair);
         server = new Participant(keyPair);
+    }
+
+    public HandshakeResponse getHandshakeResponseByUser(Participant user) {
+        Exceptions.verifyArgumentsNotNull(user);
+
+        if (activeHandshakes.contains(user)) {
+            return activeHandshakes.get(user);
+        } else {
+            activeHandshakes.put(user, new HandshakeResponse(server));
+            return activeHandshakes.get(user);
+        }
     }
 }

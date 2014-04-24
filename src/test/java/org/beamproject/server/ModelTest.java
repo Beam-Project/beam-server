@@ -20,6 +20,7 @@ package org.beamproject.server;
 
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.EncryptedKeyPair;
+import org.beamproject.common.crypto.HandshakeResponse;
 import org.beamproject.common.crypto.KeyPairCryptor;
 import org.beamproject.common.util.ConfigWriter;
 import static org.beamproject.server.App.getConfig;
@@ -45,17 +46,22 @@ public class ModelTest {
     }
 
     @Test
+    public void testConstructor() {
+        assertNotNull(model.activeHandshakes);
+    }
+
+    @Test
     public void testGetServerWhenNotExisting() {
         writer.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
         expectLastCall();
         replay(writer);
-        
+
         App.getConfig().removeProperty("encryptedServerPublicKey");
         assertNull(model.server);
         assertNotNull(model.getServer());
         assertNotNull(model.server);
         assertSame(model.server, model.getServer());
-        
+
         verify(writer);
     }
 
@@ -79,6 +85,35 @@ public class ModelTest {
         assertFalse(model.isEncryptedKeyPairStored());
         getConfig().setProperty("encryptedPrivateKey", "privkey");
         assertTrue(model.isEncryptedKeyPairStored());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetHandshakeResponseByUserOnNull() {
+        model.getHandshakeResponseByUser(null);
+    }
+
+    @Test
+    public void testGetHandshakeResponseByUserOnNewHandshake() {
+        model.server = Participant.generate();
+        Participant user = Participant.generate();
+        assertFalse(model.activeHandshakes.contains(user));
+
+        HandshakeResponse handshake = model.getHandshakeResponseByUser(user);
+
+        assertTrue(model.activeHandshakes.containsKey(user));
+        assertEquals(handshake, model.activeHandshakes.get(user));
+    }
+
+    @Test
+    public void testGetHandshakeResponseByUserOnExistingHandshake() {
+        model.server = Participant.generate();
+        Participant user = Participant.generate();
+        HandshakeResponse handshakeResponse = new HandshakeResponse(model.server);
+        model.activeHandshakes.put(user, handshakeResponse);
+
+        assertEquals(1, model.activeHandshakes.size());
+        assertEquals(handshakeResponse, model.activeHandshakes.get(user));
+        assertEquals(1, model.activeHandshakes.size());
     }
 
     /**
