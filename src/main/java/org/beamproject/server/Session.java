@@ -22,8 +22,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.Handshake;
-import org.beamproject.common.crypto.HandshakeChallenge;
-import org.beamproject.common.crypto.HandshakeResponse;
+import org.beamproject.common.crypto.HandshakeChallenger;
+import org.beamproject.common.crypto.HandshakeResponder;
 import org.beamproject.common.util.Exceptions;
 
 /**
@@ -31,8 +31,8 @@ import org.beamproject.common.util.Exceptions;
  * {@link Participant}.
  *
  * @see Handshake
- * @see HandshakeChallenge
- * @see HandshakeResponse
+ * @see HandshakeChallenger
+ * @see HandshakeResponder
  */
 public class Session {
 

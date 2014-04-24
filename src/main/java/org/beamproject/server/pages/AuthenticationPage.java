@@ -23,7 +23,7 @@ import static org.beamproject.common.MessageField.*;
 import org.beamproject.common.Participant;
 import static org.beamproject.common.crypto.Handshake.*;
 import org.beamproject.common.crypto.HandshakeException;
-import org.beamproject.common.crypto.HandshakeResponse;
+import org.beamproject.common.crypto.HandshakeResponder;
 import org.beamproject.server.App;
 
 /**
@@ -35,14 +35,14 @@ public class AuthenticationPage extends Page {
 
     private static final long serialVersionUID = 1L;
     private Phase currentPhase;
-    private HandshakeResponse handshakeResponse;
+    private HandshakeResponder handshakeResponder;
 
     @Override
     protected void processMessage() {
         Participant user = message.getRecipient();
 
         verifyEssentialFields();
-        handshakeResponse = App.getModel().getHandshakeResponseByUser(user);
+        handshakeResponder = App.getModel().getHandshakeResponseByUser(user);
 
         switch (currentPhase) {
             case CHALLENGE:
@@ -73,8 +73,8 @@ public class AuthenticationPage extends Page {
 
     private void consumeChallengeAndResponse() {
         try {
-            handshakeResponse.consumeChallenge(message);
-            responseMessage = handshakeResponse.produceResponse();
+            handshakeResponder.consumeChallenge(message);
+            responseMessage = handshakeResponder.produceResponse();
         } catch (IllegalStateException | HandshakeException ex) {
             throw new MessageException("The message could not be processed: " + ex.getMessage());
         }
@@ -82,14 +82,14 @@ public class AuthenticationPage extends Page {
 
     private void consumeSuccess() {
         try {
-            handshakeResponse.consumeSuccess(message);
+            handshakeResponder.consumeSuccess(message);
         } catch (IllegalStateException | HandshakeException ex) {
             throw new MessageException("The message could not be processed: " + ex.getMessage());
         }
     }
 
     private void storeUserToSessionKey() {
-        App.getModel().addSession(handshakeResponse.getRemoteParticipant(), handshakeResponse.getSessionKey());
+        App.getModel().addSession(handshakeResponder.getRemoteParticipant(), handshakeResponder.getSessionKey());
     }
 
     private void destroyHandshake() {

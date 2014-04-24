@@ -18,7 +18,7 @@
  */
 package org.beamproject.server.pages;
 
-import org.beamproject.common.crypto.HandshakeChallenge;
+import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.server.App;
 import org.beamproject.server.Session;
 import static org.junit.Assert.assertArrayEquals;
@@ -37,7 +37,7 @@ public class AuthenticationPageTest extends PageTest {
 
     @Test
     public void testOnCompleteCyclus() {
-        HandshakeChallenge challenger = new HandshakeChallenge(user);
+        HandshakeChallenger challenger = new HandshakeChallenger(user);
 
         message = challenger.produceChallenge(server);
         setMessageToRequest();

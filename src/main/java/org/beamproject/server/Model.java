@@ -22,7 +22,7 @@ import java.security.KeyPair;
 import java.util.concurrent.ConcurrentHashMap;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.EncryptedKeyPair;
-import org.beamproject.common.crypto.HandshakeResponse;
+import org.beamproject.common.crypto.HandshakeResponder;
 import org.beamproject.common.crypto.KeyPairCryptor;
 import org.beamproject.common.util.Base58;
 import org.beamproject.common.util.Exceptions;
@@ -33,7 +33,7 @@ import org.beamproject.server.util.ComparableBytes;
 public class Model {
 
     Participant server;
-    ConcurrentHashMap<Participant, HandshakeResponse> activeHandshakes = new ConcurrentHashMap<>();
+    ConcurrentHashMap<Participant, HandshakeResponder> activeHandshakes = new ConcurrentHashMap<>();
     ConcurrentHashMap<ComparableBytes, Session> activeSessions = new ConcurrentHashMap<>();
 
     /**
@@ -75,31 +75,31 @@ public class Model {
     }
 
     /**
-     * Gets a usable {@link HandshakeResponse} for the given user.
+     * Gets a usable {@link HandshakeResponder} for the given user.
      * <p>
      * If the user has just initialized the authentication procedure, a new
-     * {@link HandshakeResponse} is created, stored and returned.
+     * {@link HandshakeResponder} is created, stored and returned.
      * <p>
      * If the authentication procedure was active before, the existing instance
      * is returned.
      *
      * @param user The user, who is involved in this handshake.
-     * @return A valid {@link HandshakeResponse}.
+     * @return A valid {@link HandshakeResponder}.
      * @throws IllegalArgumentException If the argument is null.
      */
-    public HandshakeResponse getHandshakeResponseByUser(Participant user) {
+    public HandshakeResponder getHandshakeResponseByUser(Participant user) {
         Exceptions.verifyArgumentsNotNull(user);
 
         if (activeHandshakes.containsKey(user)) {
             return activeHandshakes.get(user);
         } else {
-            activeHandshakes.put(user, new HandshakeResponse(server));
+            activeHandshakes.put(user, new HandshakeResponder(server));
             return activeHandshakes.get(user);
         }
     }
 
     /**
-     * Removes a active {@link HandshakeResponse} of the given user, if there is
+     * Removes a active {@link HandshakeResponder} of the given user, if there is
      * one.
      * <p>
      * If the authentication procedure was active before, the existing instance
