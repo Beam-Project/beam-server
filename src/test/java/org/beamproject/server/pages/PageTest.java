@@ -18,11 +18,13 @@
  */
 package org.beamproject.server.pages;
 
+import com.meterware.httpunit.HttpException;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 import com.meterware.servletunit.ServletRunner;
 import com.meterware.servletunit.ServletUnitClient;
+import java.io.IOException;
 import org.beamproject.common.Message;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.CryptoPacker;
@@ -30,6 +32,9 @@ import org.beamproject.common.util.Base64;
 import org.beamproject.server.App;
 import org.beamproject.server.ConfigTest;
 import org.beamproject.server.ModelTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import org.xml.sax.SAXException;
 
 public class PageTest {
 
@@ -61,6 +66,27 @@ public class PageTest {
     protected void setMessageToRequest() {
         byte[] ciphertext = packer.packAndEncrypt(message);
         request.setParameter(Page.MESSAGE_PARAMETER, Base64.encode(ciphertext));
+    }
+
+    protected void sendRequestAndCatchException(int statusCode) {
+        try {
+            response = client.getResponse(request);
+            fail("This should have thrown an exception.");
+        } catch (HttpException ex) {
+            assertEquals(statusCode, ex.getResponseCode());
+        } catch (IOException | SAXException ex) {
+            fail("Unexpected exception: " + ex.getMessage());
+        }
+    }
+
+    protected void sendRequestAndExtractResponseToMessage() {
+        try {
+            response = client.getResponse(request);
+            byte[] ciphertext = Base64.decode(response.getText());
+            message = packer.decryptAndUnpack(ciphertext, user);
+        } catch (IOException | SAXException | HttpException ex) {
+            fail("Unexpected exception: " + ex.getMessage());
+        }
     }
 
 }

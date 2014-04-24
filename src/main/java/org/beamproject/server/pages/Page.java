@@ -19,6 +19,7 @@
 package org.beamproject.server.pages;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -26,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import static javax.servlet.http.HttpServletResponse.*;
 import org.beamproject.common.Message;
-import static org.beamproject.common.MessageField.*;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.CryptoException;
 import org.beamproject.common.crypto.CryptoPacker;
@@ -49,6 +49,7 @@ public abstract class Page extends HttpServlet {
     protected final static String MESSAGE_PARAMETER = "value";
     protected CryptoPacker packer = new CryptoPacker();
     protected Message message;
+    protected Message responseMessage;
 
     @Override
     final protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -68,10 +69,15 @@ public abstract class Page extends HttpServlet {
             return;
         }
 
-        if (isMessageValid()) {
+        if (!isMessageValid()) {
+            sendResponse(response, SC_BAD_REQUEST);
+            return;
+        }
+
+        try {
             processMessage();
             sendResponse(response, SC_OK);
-        } else {
+        } catch (MessageException ex) {
             sendResponse(response, SC_BAD_REQUEST);
         }
     }
@@ -88,9 +94,7 @@ public abstract class Page extends HttpServlet {
                 && Message.VERSION.equals(message.getVersion())
                 && arePublicKeysEquals(App.getModel().getServer(), message.getRecipient())
                 && message.getContent() != null
-                && !message.getContent().isEmpty()
-                && message.getContent(CNT_MSG) != null
-                && message.getContent(CNT_MSG).length > 0;
+                && !message.getContent().isEmpty();
     }
 
     private boolean arePublicKeysEquals(Participant first, Participant second) {
@@ -107,6 +111,12 @@ public abstract class Page extends HttpServlet {
     private void sendResponse(HttpServletResponse response, int statusCode) throws IOException {
         response.setContentType(CONTENT_TYPE);
         response.setStatus(statusCode);
+
+        if (responseMessage != null) {
+            try (PrintWriter out = response.getWriter()) {
+                out.print(Base64.encode(packer.packAndEncrypt(responseMessage)));
+            }
+        }
     }
 
 }
