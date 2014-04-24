@@ -17,12 +17,13 @@
             <h1>beam-server</h1>
             <p>You can send Beam messages via this server to communicate privately.</p>
             <p>The public key is:</p>
-            <p><code><%= App.getServer().getPublicKeyAsBase58()%></code></p>
-            <p>You can also just click the link: <a href="<%= UrlAssembler.toUrlByServer(App.getServer())%>">beam-server</a></p>
+            <p><code><%= App.getModel().getServer().getPublicKeyAsBase58()%></code></p>
+            <p>You can also just click the link: <a href="<%= UrlAssembler.toUrlByServer(App.getModel().getServer())%>">beam-server</a></p>
 
-            <p>Interact with this server via the following paths and methods:</p>
+            <p>Interact with this server via the following paths, always via <code>POST</code> and <code>GET</code></p>
             <ul>
-                <li><code>/deliver</code> -- via <code>POST</code> or <code>GET</code> to deliver messages to this server</li>
+                <li><code>/authentication</code> --  establish authentication between a client and this server</li>
+                <li><code>/delivery</code> -- deliver messages to this server</li>
             </ul>
             <p>On all paths above is exactly one parameter, named <code>value</code>, expected.</p>
             <p>For more information about this server visit <a href="https://www.beamproject.org/" target="_blank">beamproject.org</a>.</p>
