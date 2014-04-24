@@ -18,9 +18,12 @@
  */
 package org.beamproject.server.pages;
 
+import org.beamproject.common.MessageField;
+
 /**
  * This exception is thrown when a problem occurs during processing in incoming
- * message in a {@link Page}.
+ * message in a {@link Page}. This could be, for example, when a needed
+ * {@link MessageField} is messing.
  */
 public class MessageException extends RuntimeException {
 
