@@ -76,6 +76,7 @@ public class AuthenticationPage extends Page {
             responder.consumeChallenge(message);
             responseMessage = responder.produceResponse();
         } catch (IllegalStateException | HandshakeException ex) {
+            destroyHandshake();
             throw new MessageException("The message could not be processed: " + ex.getMessage());
         }
     }
@@ -84,7 +85,9 @@ public class AuthenticationPage extends Page {
         try {
             responder.consumeSuccess(message);
         } catch (IllegalStateException | HandshakeException ex) {
-            throw new MessageException("The message could not be processed: " + ex.getMessage());
+            destroyHandshake();
+            throw new MessageException("The message could not be processed: " + ex.getMessage()
+            );
         }
     }
 

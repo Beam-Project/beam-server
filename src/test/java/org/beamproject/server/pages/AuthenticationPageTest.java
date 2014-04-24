@@ -18,6 +18,9 @@
  */
 package org.beamproject.server.pages;
 
+import static java.net.HttpURLConnection.*;
+import org.beamproject.common.Message;
+import static org.beamproject.common.MessageField.*;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.server.App;
 import org.beamproject.server.Session;
@@ -28,17 +31,68 @@ import org.junit.Before;
 public class AuthenticationPageTest extends PageTest {
 
     private AuthenticationPage page;
+    private HandshakeChallenger challenger;
 
     @Before
     public void setDeliveryPageUp() {
         page = new AuthenticationPage();
         basicSetup(page);
+        challenger = new HandshakeChallenger(user);
+    }
+
+    @Test
+    public void testChallengeOnMissingPhase() {
+        message = challenger.produceChallenge(server);
+        message.getContent().remove(CNT_CRPHASE.toString());
+        setMessageToRequest();
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+    }
+
+    @Test
+    public void testChallengeOnMissingNonce() {
+        message = challenger.produceChallenge(server);
+        message.getContent().remove(CNT_CRNONCE.toString());
+        setMessageToRequest();
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+    }
+
+    @Test
+    public void testChallengeOnMissingPublicKey() {
+        message = challenger.produceChallenge(server);
+        message.getContent().remove(CNT_CRPUBKEY.toString());
+        setMessageToRequest();
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+    }
+
+    @Test
+    public void testChallengeOnTripleRequest() {
+        message = challenger.produceChallenge(server);
+        setMessageToRequest();
+
+        // Okay, first challenge.
+        sendRequestAndExtractResponseToMessage();
+
+        // Second challenge -> destroy Handshake on server side.
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+
+        // Third challenge is as if it was the first one.
+        sendRequestAndExtractResponseToMessage();
+    }
+
+    @Test
+    public void testOnDoubleRequest() {
+        Message original = challenger.produceChallenge(server);
+        message = original;
+        setMessageToRequest();
+        sendRequestAndExtractResponseToMessage();
+
+        message = original;
+        setMessageToRequest();
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
 
     @Test
     public void testOnCompleteCyclus() {
-        HandshakeChallenger challenger = new HandshakeChallenger(user);
-
         message = challenger.produceChallenge(server);
         setMessageToRequest();
         sendRequestAndExtractResponseToMessage();
