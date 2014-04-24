@@ -18,7 +18,9 @@
  */
 package org.beamproject.server.pages;
 
+import org.beamproject.common.Message;
 import org.beamproject.common.MessageField;
+import org.beamproject.common.util.Exceptions;
 
 /**
  * This exception is thrown when a problem occurs during processing in incoming
@@ -27,9 +29,39 @@ import org.beamproject.common.MessageField;
  */
 public class MessageException extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
+    public enum ErrorCode {
 
-    public MessageException(String message) {
+        /**
+         * This code is generally usable when something goes wrong and the other
+         * side can without understanding interpret this code.
+         */
+        ERROR;
+    }
+    private final static long serialVersionUID = 1L;
+    private final ErrorCode errorCode;
+
+    /**
+     * Creates a new {@link MessageException}, initialized with an
+     * {@link ErrorCode} and a message. The error code will be sent to the other
+     * side as encrypted {@link Message}.
+     *
+     * @param errorCode The error code for the other side.
+     * @param message A message that describes why this exception has been
+     * thrown.
+     * @throws IllegalArgumentException If at least one of the arguments is
+     * null.
+     */
+    public MessageException(ErrorCode errorCode, String message) {
         super(message);
+        Exceptions.verifyArgumentsNotNull(errorCode, message);
+
+        this.errorCode = errorCode;
+    }
+
+    /**
+     * @return The error code associated with this exception.
+     */
+    public ErrorCode getErrorCode() {
+        return errorCode;
     }
 }
