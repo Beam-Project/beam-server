@@ -72,6 +72,19 @@ public class Model {
         server = new Participant(keyPair);
     }
 
+    /**
+     * Gets a usable {@link HandshakeResponse} for the given user.
+     * <p>
+     * If the user has just initialized the authentication procedure, a new
+     * {@link HandshakeResponse} is created, stored and returned.
+     * <p>
+     * If the authentication procedure was active before, the existing instance
+     * is returned.
+     *
+     * @param user The user, who is involved in this handshake.
+     * @return A valid {@link HandshakeResponse}.
+     * @throws IllegalArgumentException If the argument is null.
+     */
     public HandshakeResponse getHandshakeResponseByUser(Participant user) {
         Exceptions.verifyArgumentsNotNull(user);
 
