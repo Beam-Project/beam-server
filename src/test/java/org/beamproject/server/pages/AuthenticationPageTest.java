@@ -18,12 +18,12 @@
  */
 package org.beamproject.server.pages;
 
-import java.io.IOException;
-import static org.beamproject.common.MessageField.CNT_MSG;
+import org.beamproject.common.crypto.HandshakeChallenge;
+import org.beamproject.server.App;
+import org.beamproject.server.Session;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Before;
-import org.xml.sax.SAXException;
 
 public class AuthenticationPageTest extends PageTest {
 
@@ -36,11 +36,20 @@ public class AuthenticationPageTest extends PageTest {
     }
 
     @Test
-    public void testSendingMessage() throws IOException, SAXException {
-        message.putContent(CNT_MSG, "hello".getBytes());
+    public void testOnCompleteCyclus() {
+        HandshakeChallenge challenger = new HandshakeChallenge(user);
+
+        message = challenger.produceChallenge(server);
         setMessageToRequest();
-        response = client.getResponse(request);
-        System.out.println(response.getText());
+        sendRequestAndExtractResponseToMessage();
+
+        challenger.consumeResponse(message);
+        message = challenger.produceSuccess();
+        setMessageToRequest();
+        sendRequestAndExtractResponseToMessage();
+
+        Session sessionFromModel = App.getModel().getSessionByKey(challenger.getSessionKey());
+        assertArrayEquals(challenger.getSessionKey(), sessionFromModel.getKey());
     }
 
 }
