@@ -18,6 +18,7 @@
  */
 package org.beamproject.server;
 
+import org.beamproject.common.Session;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.HandshakeResponder;
@@ -167,7 +168,7 @@ public class ModelTest {
         model.addSession(user, SESSION_KEY);
         assertTrue(model.activeSessions.containsKey(new ComparableBytes(SESSION_KEY)));
         Session session = model.activeSessions.get(new ComparableBytes(SESSION_KEY));
-        assertEquals(user, session.getUser());
+        assertEquals(user, session.getRemoteParticipant());
         assertArrayEquals(SESSION_KEY, session.getKey());
     }
 

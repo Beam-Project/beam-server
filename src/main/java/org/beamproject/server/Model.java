@@ -18,6 +18,7 @@
  */
 package org.beamproject.server;
 
+import org.beamproject.common.Session;
 import java.security.KeyPair;
 import java.util.concurrent.ConcurrentHashMap;
 import org.beamproject.common.Participant;
