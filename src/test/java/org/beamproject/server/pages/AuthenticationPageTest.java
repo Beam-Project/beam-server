@@ -23,7 +23,7 @@ import org.beamproject.common.Message;
 import static org.beamproject.common.MessageField.ContentField.*;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.server.App;
-import org.beamproject.server.Session;
+import org.beamproject.common.Session;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 import org.junit.Before;
