@@ -18,11 +18,7 @@
  */
 package org.beamproject.server.pages;
 
-import java.io.IOException;
-import static org.beamproject.common.MessageField.ContentField.*;
 import org.junit.Before;
-import org.junit.Test;
-import org.xml.sax.SAXException;
 
 public class DeliveryPageTest extends PageTest {
 
@@ -32,14 +28,6 @@ public class DeliveryPageTest extends PageTest {
     public void setDeliveryPageUp() {
         page = new DeliveryPage();
         basicSetup(page);
-    }
-
-    @Test
-    public void testSendingMessage() throws IOException, SAXException {
-        message.putContent(MSG, "hello".getBytes());
-        setMessageToRequest();
-        response = client.getResponse(request);
-        System.out.println(response.getText());
     }
 
 }
