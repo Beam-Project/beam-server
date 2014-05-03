@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,19 +39,18 @@ import static org.beamproject.server.App.getModel;
 import org.msgpack.MessageTypeException;
 
 /**
- * This is a basic page that can be extended to concrete pages.
- * <p>
- * Here, all basic checks and operations are done. The extending classes will
- * only have to take care of the effective work with the {@link Message}s.
+ * This is the page that handles all incoming messages. The concrete message
+ * handling is done by diverse {@link MessageHandler}s.
  */
+@WebServlet(urlPatterns = {"/in/"})
 public class Page extends HttpServlet {
 
     private final static long serialVersionUID = 1L;
     private final static String CONTENT_TYPE = "text/html;charset=UTF-8";
-    protected final static String MESSAGE_PARAMETER = "value";
-    protected CryptoPacker packer = new CryptoPacker();
-    protected Message message;
-    protected Message responseMessage;
+    public final static String MESSAGE_PARAMETER = "value";
+    private final CryptoPacker packer = new CryptoPacker();
+    private Message message;
+    Message responseMessage;
 
     @Override
     final protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -63,23 +63,28 @@ public class Page extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("Incoming request: " + request.getRequestURI() + " - " + request.getParameter(MESSAGE_PARAMETER));
         try {
             decryptAndUnpack(request);
         } catch (IllegalArgumentException | PackerException | MessageTypeException | CryptoException ex) {
             sendResponse(response, SC_BAD_REQUEST);
+            System.out.println("    Decryption failed: " + ex.getMessage());
             return;
         }
 
         if (!isMessageValid()) {
             sendResponse(response, SC_BAD_REQUEST);
+            System.out.println("   Message is not valid.");
             return;
         }
 
         try {
             processMessage();
             sendResponse(response, SC_OK);
+            System.out.println("    Message was okay and was procesed.");
         } catch (MessageException ex) {
             sendResponse(response, SC_BAD_REQUEST);
+            System.out.println("    Message lead to a problem: " + ex.getMessage());
         }
     }
 
@@ -126,9 +131,12 @@ public class Page extends HttpServlet {
         response.setStatus(statusCode);
 
         if (responseMessage != null) {
+            System.out.println("    Send response.");
             try (PrintWriter out = response.getWriter()) {
                 out.print(Base64.encode(packer.packAndEncrypt(responseMessage)));
             }
+        } else {
+            System.out.println("    Do not send a response.");
         }
     }
 
