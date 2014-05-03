@@ -27,12 +27,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import static javax.servlet.http.HttpServletResponse.*;
 import org.beamproject.common.Message;
+import static org.beamproject.common.MessageField.ContentField.*;
+import static org.beamproject.common.MessageField.ContentField.TypeValue.*;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.CryptoException;
 import org.beamproject.common.crypto.CryptoPacker;
 import org.beamproject.common.crypto.PackerException;
 import org.beamproject.common.util.Base64;
-import org.beamproject.server.App;
 import static org.beamproject.server.App.getModel;
 import org.msgpack.MessageTypeException;
 
@@ -42,7 +43,7 @@ import org.msgpack.MessageTypeException;
  * Here, all basic checks and operations are done. The extending classes will
  * only have to take care of the effective work with the {@link Message}s.
  */
-public abstract class Page extends HttpServlet {
+public class Page extends HttpServlet {
 
     private final static long serialVersionUID = 1L;
     private final static String CONTENT_TYPE = "text/html;charset=UTF-8";
@@ -92,7 +93,8 @@ public abstract class Page extends HttpServlet {
     private boolean isMessageValid() {
         return message != null
                 && Message.VERSION.equals(message.getVersion())
-                && arePublicKeysEquals(App.getModel().getServer(), message.getRecipient())
+                && message.getContent(TYPE) != null
+                && arePublicKeysEquals(getModel().getServer(), message.getRecipient())
                 && message.getContent() != null
                 && !message.getContent().isEmpty();
     }
@@ -103,10 +105,21 @@ public abstract class Page extends HttpServlet {
                 && Arrays.equals(first.getPublicKeyAsBytes(), second.getPublicKeyAsBytes());
     }
 
-    /**
-     * This method processes the received {@link Message}.
-     */
-    abstract protected void processMessage();
+    private void processMessage() {
+        switch (message.getType()) {
+            case HANDSHAKE:
+                HandshakeHandler handshakeHandler = new HandshakeHandler();
+                handshakeHandler.handle(message, this);
+                break;
+            case HEARTBEAT:
+            default:
+                throw new UnsupportedOperationException("Todo...");
+        }
+    }
+
+    public void setResponseMessage(Message responseMessage) {
+        this.responseMessage = responseMessage;
+    }
 
     private void sendResponse(HttpServletResponse response, int statusCode) throws IOException {
         response.setContentType(CONTENT_TYPE);

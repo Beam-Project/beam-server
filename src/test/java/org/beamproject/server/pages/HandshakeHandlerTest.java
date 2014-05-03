@@ -18,25 +18,24 @@
  */
 package org.beamproject.server.pages;
 
-import static java.net.HttpURLConnection.*;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import org.beamproject.common.Message;
-import static org.beamproject.common.MessageField.ContentField.*;
+import static org.beamproject.common.MessageField.ContentField.HSNONCE;
+import static org.beamproject.common.MessageField.ContentField.HSPHASE;
+import static org.beamproject.common.MessageField.ContentField.HSPUBKEY;
+import org.beamproject.common.Session;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.server.App;
-import org.beamproject.common.Session;
-import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
+import static org.junit.Assert.*;
 import org.junit.Before;
 
-public class AuthenticationPageTest extends PageTest {
+public class HandshakeHandlerTest extends PageTest {
 
-    private AuthenticationPage page;
     private HandshakeChallenger challenger;
 
     @Before
     public void setDeliveryPageUp() {
-        page = new AuthenticationPage();
-        basicSetup(page);
         challenger = new HandshakeChallenger(user);
     }
 

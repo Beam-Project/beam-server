@@ -18,28 +18,32 @@
  */
 package org.beamproject.server.pages;
 
-import static org.beamproject.common.MessageField.ContentField.*;
-import org.beamproject.common.Participant;
-import static org.beamproject.common.crypto.Handshake.*;
+import org.beamproject.common.Message;
+import static org.beamproject.common.MessageField.ContentField.HSPHASE;
+import org.beamproject.common.crypto.Handshake;
+import org.beamproject.common.crypto.Handshake.Phase;
 import org.beamproject.common.crypto.HandshakeException;
 import org.beamproject.common.crypto.HandshakeResponder;
 import org.beamproject.server.App;
+import static org.beamproject.server.App.getModel;
 
 /**
- * This servlet allows to establish authentication between a user respectively
- * client and this server.
+ * This {@link MessageHandler} allows to establish authentication between a user
+ * respectively client and this server.
  */
-public class AuthenticationPage extends Page {
+public class HandshakeHandler implements MessageHandler {
 
-    private static final long serialVersionUID = 1L;
     private Phase currentPhase;
     private HandshakeResponder responder;
+    private Message message;
+    private Page page;
 
-    protected void processMessage() {
-        Participant user = message.getRecipient();
-
-        verifyEssentialFields();
-        responder = App.getModel().getHandshakeResponseByUser(user);
+    @Override
+    public void handle(Message message, Page page) {
+        verifyEssentialFields(message);
+        this.message = message;
+        this.page = page;
+        this.responder = getModel().getHandshakeResponseByUser(message.getRecipient());
 
         switch (currentPhase) {
             case CHALLENGE:
@@ -56,13 +60,13 @@ public class AuthenticationPage extends Page {
         }
     }
 
-    private void verifyEssentialFields() {
+    private void verifyEssentialFields(Message message) {
         if (!message.containsContent(HSPHASE)) {
             throw new MessageException("The message does not contain the required field " + HSPHASE + ".");
         }
 
         try {
-            currentPhase = Phase.valueOf(message.getContent(HSPHASE));
+            currentPhase = Handshake.Phase.valueOf(message.getContent(HSPHASE));
         } catch (IllegalArgumentException ex) {
             throw new MessageException("The given Phase is not valid: " + ex.getMessage());
         }
@@ -71,7 +75,7 @@ public class AuthenticationPage extends Page {
     private void consumeChallengeAndResponse() {
         try {
             responder.consumeChallenge(message);
-            responseMessage = responder.produceResponse();
+            page.setResponseMessage(responder.produceResponse());
         } catch (IllegalStateException | HandshakeException ex) {
             destroyHandshake();
             throw new MessageException("The message could not be processed: " + ex.getMessage());
@@ -95,5 +99,4 @@ public class AuthenticationPage extends Page {
     private void destroyHandshake() {
         App.getModel().destroyHandshakeResponseByUser(message.getRecipient());
     }
-
 }
