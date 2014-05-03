@@ -60,12 +60,12 @@ public class AuthenticationPage extends Page {
     }
 
     private void verifyEssentialFields() {
-        if (!message.containsContent(CRPHASE)) {
-            throw new MessageException("The message does not contain the required field " + CRPHASE + ".");
+        if (!message.containsContent(HSPHASE)) {
+            throw new MessageException("The message does not contain the required field " + HSPHASE + ".");
         }
 
         try {
-            currentPhase = Phase.valueOf(message.getContent(CRPHASE));
+            currentPhase = Phase.valueOf(message.getContent(HSPHASE));
         } catch (IllegalArgumentException ex) {
             throw new MessageException("The given Phase is not valid: " + ex.getMessage());
         }

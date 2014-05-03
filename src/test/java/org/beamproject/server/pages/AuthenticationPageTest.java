@@ -43,7 +43,7 @@ public class AuthenticationPageTest extends PageTest {
     @Test
     public void testChallengeOnMissingPhase() {
         message = challenger.produceChallenge(server);
-        message.getContent().remove(CRPHASE.toString());
+        message.getContent().remove(HSPHASE.toString());
         setMessageToRequest();
         sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
@@ -51,7 +51,7 @@ public class AuthenticationPageTest extends PageTest {
     @Test
     public void testChallengeOnMissingNonce() {
         message = challenger.produceChallenge(server);
-        message.getContent().remove(CRNONCE.toString());
+        message.getContent().remove(HSNONCE.toString());
         setMessageToRequest();
         sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
@@ -59,7 +59,7 @@ public class AuthenticationPageTest extends PageTest {
     @Test
     public void testChallengeOnMissingPublicKey() {
         message = challenger.produceChallenge(server);
-        message.getContent().remove(CRPUBKEY.toString());
+        message.getContent().remove(HSPUBKEY.toString());
         setMessageToRequest();
         sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
