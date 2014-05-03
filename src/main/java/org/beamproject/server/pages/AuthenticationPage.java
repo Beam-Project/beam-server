@@ -18,7 +18,6 @@
  */
 package org.beamproject.server.pages;
 
-import javax.servlet.annotation.WebServlet;
 import static org.beamproject.common.MessageField.ContentField.*;
 import org.beamproject.common.Participant;
 import static org.beamproject.common.crypto.Handshake.*;
@@ -30,14 +29,12 @@ import org.beamproject.server.App;
  * This servlet allows to establish authentication between a user respectively
  * client and this server.
  */
-@WebServlet(urlPatterns = {"/authentication"})
 public class AuthenticationPage extends Page {
 
     private static final long serialVersionUID = 1L;
     private Phase currentPhase;
     private HandshakeResponder responder;
 
-    @Override
     protected void processMessage() {
         Participant user = message.getRecipient();
 
