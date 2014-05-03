@@ -14,19 +14,12 @@
     </head>
     <body>
         <div id="wrapper">
-            <h1>beam-server</h1>
+            <h1>Beam Server</h1>
             <p>You can send Beam messages via this server to communicate privately.</p>
-            <p>The public key is:</p>
-            <p><code><%= App.getModel().getServer().getPublicKeyAsBase58()%></code></p>
-            <p>You can also just click the link: <a href="<%= UrlAssembler.toUrlByServer(App.getModel().getServer())%>">beam-server</a></p>
+            
+            <p class="linkText">Use this <a href="<%= UrlAssembler.toUrlByServer(App.getModel().getServer())%>">Beam server address</a> link to configure your client.</p>
 
-            <p>Interact with this server via the following paths, always via <code>POST</code> and <code>GET</code></p>
-            <ul>
-                <li><code>/authentication</code> --  establish authentication between a client and this server</li>
-                <li><code>/delivery</code> -- deliver messages to this server</li>
-            </ul>
-            <p>On all paths above is exactly one parameter, named <code>value</code>, expected.</p>
-            <p>For more information about this server visit <a href="https://www.beamproject.org/" target="_blank">beamproject.org</a>.</p>
+            <p>For more information about this server, visit <a href="https://www.beamproject.org/" target="_blank">beamproject.org</a>.</p>
             <footer>
                 This software is distributed under the terms of the <a href="https://gnu.org/licenses/gpl.txt" target="_blank">GPLv3 or later</a>.
             </footer>
