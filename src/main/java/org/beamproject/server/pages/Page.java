@@ -111,14 +111,25 @@ public class Page extends HttpServlet {
     }
 
     private void processMessage() {
-        switch (message.getType()) {
+        switch (getMessageType()) {
             case HANDSHAKE:
                 HandshakeHandler handshakeHandler = new HandshakeHandler();
                 handshakeHandler.handle(message, this);
                 break;
             case HEARTBEAT:
+                HeartbeatHandler heartbeatHandler = new HeartbeatHandler();
+                heartbeatHandler.handle(message, this);
+                break;
             default:
-                throw new UnsupportedOperationException("Todo...");
+                throw new MessageException("No such message type.");
+        }
+    }
+
+    private TypeValue getMessageType() {
+        try {
+            return message.getType();
+        } catch (IllegalArgumentException ex) {
+            throw new MessageException("The message type is invalid.");
         }
     }
 

@@ -27,14 +27,18 @@ import com.meterware.servletunit.ServletUnitClient;
 import java.io.IOException;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import org.beamproject.common.Message;
-import static org.beamproject.common.MessageField.ContentField.MSG;
+import static org.beamproject.common.MessageField.*;
+import static org.beamproject.common.MessageField.ContentField.*;
 import static org.beamproject.common.MessageField.ContentField.TypeValue.*;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.CryptoPacker;
+import static org.beamproject.common.crypto.Handshake.Phase.*;
+import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.util.Base64;
 import static org.beamproject.server.App.getModel;
 import org.beamproject.server.ConfigTest;
 import org.beamproject.server.ModelTest;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
@@ -105,7 +109,17 @@ public class PageTest {
     }
 
     @Test
+    public void testOnMessageWithoutVersion() {
+        message.getContent().remove(VRS.toString());
+        message.putContent(MSG, "hello".getBytes());
+        setMessageToRequest();
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+    }
+
+    @Test
     public void testOnMessageWithOnlyVersion() {
+        message.getContent().remove(RCP.toString());
+        message.getContent().remove(CNT.toString());
         setMessageToRequest();
         sendRequestAndCatchException(HTTP_BAD_REQUEST);
     }
@@ -127,8 +141,32 @@ public class PageTest {
     }
 
     @Test
+    public void testOnMessageWithNullVersion() {
+        message.getContent().put(VRS.toString(), null);
+        message.putContent(MSG, "hello".getBytes());
+        setMessageToRequest();
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+    }
+
+    @Test
     public void testOnMessageWithWrongRecipient() {
         message.setRecipient(Participant.generate());
+        message.putContent(MSG, "hello".getBytes());
+        setMessageToRequest();
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+    }
+
+    @Test
+    public void testOnMessageWithEmptyRecipient() {
+        message.getContent().put(RCP.toString(), new byte[0]);
+        message.putContent(MSG, "hello".getBytes());
+        setMessageToRequest();
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+    }
+
+    @Test
+    public void testOnMessageWithNullRecipient() {
+        message.getContent().put(RCP.toString(), null);
         message.putContent(MSG, "hello".getBytes());
         setMessageToRequest();
         sendRequestAndCatchException(HTTP_BAD_REQUEST);
@@ -141,18 +179,53 @@ public class PageTest {
     }
 
     @Test
+    public void testOnMessageWithWrongType() {
+        message.getContent().put(ContentField.TYPE.toString(), "UNKNOWN".getBytes());
+        message.putContent(MSG, "hello".getBytes());
+        setMessageToRequest();
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+    }
+
+    @Test
+    public void testOnMessageWithEmptyType() {
+        message.getContent().put(ContentField.TYPE.toString(), "".getBytes());
+        message.putContent(MSG, "hello".getBytes());
+        setMessageToRequest();
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+    }
+
+    @Test
+    public void testOnMessageWithNullType() {
+        message.getContent().put(ContentField.TYPE.toString(), null);
+        message.putContent(MSG, "hello".getBytes());
+        setMessageToRequest();
+        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+    }
+
+    @Test
     public void testSetResponseMessage() {
         Message responseMessage = new Message(BLANK, Participant.generate());
         page.setResponseMessage(responseMessage);
         assertSame(responseMessage, page.responseMessage);
     }
 
-    protected void setMessageToRequest() {
+    @Test
+    public void testProcessMessageOnHeartbeatHandlerInvocation() {
+        HandshakeChallenger challenger = new HandshakeChallenger(user);
+        Message challenge = challenger.produceChallenge(server);
+        message = challenge;
+        setMessageToRequest();
+        sendRequestAndExtractResponseToMessage();
+
+        assertArrayEquals(RESPONSE.getBytes(), message.getContent(HSPHASE));
+    }
+
+    private void setMessageToRequest() {
         byte[] ciphertext = packer.packAndEncrypt(message);
         request.setParameter(Page.MESSAGE_PARAMETER, Base64.encode(ciphertext));
     }
 
-    protected void sendRequestAndCatchException(int statusCode) {
+    private void sendRequestAndCatchException(int statusCode) {
         try {
             response = client.getResponse(request);
             fail("This should have thrown an exception.");
@@ -163,7 +236,7 @@ public class PageTest {
         }
     }
 
-    protected void sendRequestAndExtractResponseToMessage() {
+    private void sendRequestAndExtractResponseToMessage() {
         try {
             response = client.getResponse(request);
             byte[] ciphertext = Base64.decode(response.getText());
@@ -172,5 +245,4 @@ public class PageTest {
             fail("Unexpected exception: " + ex.getMessage());
         }
     }
-
 }
