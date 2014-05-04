@@ -22,8 +22,9 @@ import org.beamproject.common.Message;
 import static org.beamproject.common.MessageField.ContentField.HSNONCE;
 import static org.beamproject.common.MessageField.ContentField.HSPHASE;
 import static org.beamproject.common.MessageField.ContentField.HSPUBKEY;
-import org.beamproject.common.Participant;
+import org.beamproject.common.Server;
 import org.beamproject.common.Session;
+import org.beamproject.common.User;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.server.App;
 import org.beamproject.server.AppTest;
@@ -38,14 +39,15 @@ public class HandshakeHandlerTest {
     private Model model;
     private Page page;
     private HandshakeHandler handler;
-    private Participant user, server;
+    private User user;
+    private Server server;
     private HandshakeChallenger challenger;
     private Message message;
 
     @Before
     public void setUp() {
-        server = Participant.generate();
-        user = Participant.generate();
+        server = Server.generate();
+        user = User.generate();
         model = new Model();
         ModelTest.setServer(server, model);
         AppTest.setAppModel(model);

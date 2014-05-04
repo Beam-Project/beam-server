@@ -20,6 +20,7 @@ package org.beamproject.server;
 
 import org.beamproject.common.Session;
 import org.beamproject.common.Participant;
+import org.beamproject.common.Server;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.HandshakeResponder;
 import org.beamproject.common.crypto.KeyPairCryptor;
@@ -71,8 +72,9 @@ public class ModelTest {
 
     @Test
     public void testGetServerWhenExistingInConfig() {
-        Participant server = Participant.generate();
+        Server server = Server.generate();
         EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(getConfig().keyPairPassword(), server.getKeyPair());
+        getConfig().setProperty("serverUrl", server.getUrl().toString());
         getConfig().setProperty("keyPairSalt", encryptedKeyPair.getSalt());
         getConfig().setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
         getConfig().setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
@@ -98,7 +100,7 @@ public class ModelTest {
 
     @Test
     public void testGetHandshakeResponseByUserOnNewHandshake() {
-        model.server = Participant.generate();
+        model.server = Server.generate();
         Participant user = Participant.generate();
 
         assertFalse(model.activeHandshakes.contains(user));
@@ -109,7 +111,7 @@ public class ModelTest {
 
     @Test
     public void testGetHandshakeResponseByUserOnExistingHandshake() {
-        model.server = Participant.generate();
+        model.server = Server.generate();
         Participant user = Participant.generate();
         HandshakeResponder handshakeResponder = new HandshakeResponder(model.server);
         model.activeHandshakes.put(user, handshakeResponder);
@@ -135,7 +137,7 @@ public class ModelTest {
 
     @Test
     public void testDestroyHandshakeResponseByUserOnExistingHandshake() {
-        model.server = Participant.generate();
+        model.server = Server.generate();
         Participant user = Participant.generate();
         HandshakeResponder handshakeResponder = new HandshakeResponder(model.server);
         model.activeHandshakes.put(user, handshakeResponder);
@@ -208,7 +210,7 @@ public class ModelTest {
      * @param server The server to set. This can be null.
      * @param model The model on that should be set.
      */
-    public static void setServer(Participant server, Model model) {
+    public static void setServer(Server server, Model model) {
         model.server = server;
     }
 

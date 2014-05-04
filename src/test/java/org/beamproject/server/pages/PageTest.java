@@ -31,6 +31,8 @@ import static org.beamproject.common.MessageField.*;
 import static org.beamproject.common.MessageField.ContentField.*;
 import static org.beamproject.common.MessageField.ContentField.TypeValue.*;
 import org.beamproject.common.Participant;
+import org.beamproject.common.Server;
+import org.beamproject.common.User;
 import org.beamproject.common.crypto.CryptoPacker;
 import static org.beamproject.common.crypto.Handshake.Phase.*;
 import org.beamproject.common.crypto.HandshakeChallenger;
@@ -54,8 +56,8 @@ public class PageTest {
     protected ServletUnitClient client;
     protected WebRequest request;
     protected WebResponse response;
-    protected Participant server;
-    protected Participant user;
+    protected Server server;
+    protected User user;
     protected Message message;
     protected CryptoPacker packer;
     private Page page;
@@ -64,8 +66,8 @@ public class PageTest {
     public void setPageUp() {
         ConfigTest.loadDefaultConfig();
         page = new Page();
-        server = Participant.generate();
-        user = Participant.generate();
+        server = Server.generate();
+        user = User.generate();
         ModelTest.setServer(server, getModel());
         packer = new CryptoPacker();
         message = new Message(HANDSHAKE, server);

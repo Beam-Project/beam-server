@@ -18,10 +18,14 @@
  */
 package org.beamproject.server;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.beamproject.common.Session;
 import java.security.KeyPair;
 import java.util.concurrent.ConcurrentHashMap;
 import org.beamproject.common.Participant;
+import org.beamproject.common.Server;
+import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.HandshakeResponder;
 import org.beamproject.common.crypto.KeyPairCryptor;
@@ -33,7 +37,7 @@ import org.beamproject.server.util.ComparableBytes;
 
 public class Model {
 
-    Participant server;
+    Server server;
     ConcurrentHashMap<Participant, HandshakeResponder> activeHandshakes = new ConcurrentHashMap<>();
     ConcurrentHashMap<ComparableBytes, Session> activeSessions = new ConcurrentHashMap<>();
 
@@ -43,12 +47,12 @@ public class Model {
      *
      * @return The server.
      */
-    public Participant getServer() {
+    public Server getServer() {
         if (server == null) {
             if (isEncryptedKeyPairStored()) {
                 decryptServerFromConfig();
             } else {
-                server = Participant.generate();
+                server = new Server(getUrlFromConfig(), EccKeyPairGenerator.generate());
                 EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(getConfig().keyPairPassword(), server.getKeyPair());
                 getConfig().setProperty("keyPairSalt", encryptedKeyPair.getSalt());
                 getConfig().setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
@@ -72,7 +76,15 @@ public class Model {
 
         EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(publicKey, privateKey, salt);
         KeyPair keyPair = KeyPairCryptor.decrypt(getConfig().keyPairPassword(), encryptedKeyPair);
-        server = new Participant(keyPair);
+        server = new Server(getUrlFromConfig(), keyPair);
+    }
+
+    private URL getUrlFromConfig() {
+        try {
+            return new URL(getConfig().serverUrl());
+        } catch (MalformedURLException ex) {
+            throw new IllegalStateException("The server url in the config file is invalid.");
+        }
     }
 
     /**
@@ -100,8 +112,8 @@ public class Model {
     }
 
     /**
-     * Removes a active {@link HandshakeResponder} of the given user, if there is
-     * one.
+     * Removes a active {@link HandshakeResponder} of the given user, if there
+     * is one.
      * <p>
      * If the authentication procedure was active before, the existing instance
      * is returned.

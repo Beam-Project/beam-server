@@ -45,6 +45,7 @@ public interface Config extends ConfigBase {
 
     String serverName();
 
+    @DefaultValue("http://localhost:8080/beam-server/in/")
     String serverUrl();
 
     @DefaultValue("20000")
