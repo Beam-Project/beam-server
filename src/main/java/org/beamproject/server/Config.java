@@ -46,4 +46,7 @@ public interface Config extends ConfigBase {
     String serverName();
 
     String serverUrl();
+
+    @DefaultValue("20000")
+    long maxHeartbeatTimestampDeviationInMilliseconds();
 }
