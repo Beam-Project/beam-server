@@ -18,88 +18,100 @@
  */
 package org.beamproject.server.pages;
 
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import org.beamproject.common.Message;
 import static org.beamproject.common.MessageField.ContentField.HSNONCE;
 import static org.beamproject.common.MessageField.ContentField.HSPHASE;
 import static org.beamproject.common.MessageField.ContentField.HSPUBKEY;
+import org.beamproject.common.Participant;
 import org.beamproject.common.Session;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.server.App;
+import org.beamproject.server.AppTest;
+import org.beamproject.server.Model;
+import org.beamproject.server.ModelTest;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 
-public class HandshakeHandlerTest extends PageTest {
+public class HandshakeHandlerTest {
 
+    private Model model;
+    private Page page;
+    private HandshakeHandler handler;
+    private Participant user, server;
     private HandshakeChallenger challenger;
+    private Message message;
 
     @Before
-    public void setDeliveryPageUp() {
+    public void setUp() {
+        server = Participant.generate();
+        user = Participant.generate();
+        model = new Model();
+        ModelTest.setServer(server, model);
+        AppTest.setAppModel(model);
+
         challenger = new HandshakeChallenger(user);
+        handler = new HandshakeHandler();
+        page = new Page();
     }
 
-    @Test
+    @Test(expected = MessageException.class)
     public void testChallengeOnMissingPhase() {
         message = challenger.produceChallenge(server);
         message.getContent().remove(HSPHASE.toString());
-        setMessageToRequest();
-        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+        handler.handle(message, page);
     }
 
-    @Test
+    @Test(expected = MessageException.class)
     public void testChallengeOnMissingNonce() {
         message = challenger.produceChallenge(server);
         message.getContent().remove(HSNONCE.toString());
-        setMessageToRequest();
-        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+        handler.handle(message, page);
     }
 
-    @Test
+    @Test(expected = MessageException.class)
     public void testChallengeOnMissingPublicKey() {
         message = challenger.produceChallenge(server);
         message.getContent().remove(HSPUBKEY.toString());
-        setMessageToRequest();
-        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+        handler.handle(message, page);
     }
 
     @Test
     public void testChallengeOnTripleRequest() {
         message = challenger.produceChallenge(server);
-        setMessageToRequest();
 
-        // Okay, first challenge.
-        sendRequestAndExtractResponseToMessage();
+        // First challenge -> should work
+        handler.handle(message, page);
 
         // Second challenge -> destroy Handshake on server side.
-        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+        try {
+            handler.handle(message, page);
+            fail("An exception should have been thrown.");
+        } catch (MessageException ex) {
+        }
 
         // Third challenge is as if it was the first one.
-        sendRequestAndExtractResponseToMessage();
+        handler.handle(message, page);
     }
 
-    @Test
+    @Test(expected = MessageException.class)
     public void testOnDoubleRequest() {
         Message original = challenger.produceChallenge(server);
         message = original;
-        setMessageToRequest();
-        sendRequestAndExtractResponseToMessage();
+        handler.handle(message, page);
 
         message = original;
-        setMessageToRequest();
-        sendRequestAndCatchException(HTTP_BAD_REQUEST);
+        handler.handle(message, page);
     }
 
     @Test
     public void testOnCompleteCyclus() {
         message = challenger.produceChallenge(server);
-        setMessageToRequest();
-        sendRequestAndExtractResponseToMessage();
+        handler.handle(message, page);
 
-        challenger.consumeResponse(message);
+        challenger.consumeResponse(page.responseMessage);
         message = challenger.produceSuccess();
-        setMessageToRequest();
-        sendRequestAndExtractResponseToMessage();
+        handler.handle(message, page);
 
         Session sessionFromModel = App.getModel().getSessionByKey(challenger.getSessionKey());
         assertArrayEquals(challenger.getSessionKey(), sessionFromModel.getKey());

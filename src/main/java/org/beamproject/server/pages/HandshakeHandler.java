@@ -47,7 +47,7 @@ public class HandshakeHandler implements MessageHandler {
 
         switch (currentPhase) {
             case CHALLENGE:
-                consumeChallengeAndResponse();
+                consumeChallengeAndProduceResponse();
                 break;
             case SUCCESS:
                 consumeSuccess();
@@ -55,7 +55,9 @@ public class HandshakeHandler implements MessageHandler {
                 destroyHandshake();
                 break;
             case FAILURE:
+            case INVALIDATE:
             default:
+                System.out.println("Phase " + currentPhase + ": invalidate session");
                 destroyHandshake();
         }
     }
@@ -72,7 +74,7 @@ public class HandshakeHandler implements MessageHandler {
         }
     }
 
-    private void consumeChallengeAndResponse() {
+    private void consumeChallengeAndProduceResponse() {
         try {
             responder.consumeChallenge(message);
             page.setResponseMessage(responder.produceResponse());
