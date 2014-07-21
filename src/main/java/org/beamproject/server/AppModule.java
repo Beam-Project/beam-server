@@ -30,9 +30,9 @@ import org.beamproject.common.util.Files;
 import org.beamproject.common.util.Executor;
 import org.beamproject.server.carrier.HttpConnectionPoolFactory;
 import org.beamproject.common.carrier.ClientCarrier;
-import org.beamproject.server.carrier.ClientCarrierImpl;
+import org.beamproject.common.carrier.ClientCarrierImpl;
 import org.beamproject.server.carrier.HttpServer;
-import org.beamproject.server.carrier.MqttConnectionPoolFactory;
+import org.beamproject.common.carrier.MqttConnectionPoolFactory;
 import org.beamproject.common.carrier.ServerCarrier;
 import org.beamproject.server.carrier.ServerCarrierImpl;
 import org.beamproject.common.carrier.ClientCarrierModel;
@@ -40,6 +40,7 @@ import org.beamproject.server.model.ClientCarrierModelImpl;
 import org.beamproject.common.carrier.ServerCarrierModel;
 import org.beamproject.server.model.ServerCarrierModelImpl;
 import org.beamproject.server.util.Config;
+import static org.beamproject.server.util.Config.Key.*;
 import org.beamproject.server.view.CommandLineView;
 
 public class AppModule extends AbstractModule {
@@ -92,7 +93,12 @@ public class AppModule extends AbstractModule {
     @Provides
     @Singleton
     MqttConnectionPoolFactory providesMqttConnectionPoolFactory() {
-        return new MqttConnectionPoolFactory(providesConfig());
+        Config config = providesConfig();
+        
+        return new MqttConnectionPoolFactory(config.get(MQTT_BROKER_HOST),
+                config.get(MQTT_BROKER_PORT),
+                config.get(MQTT_BROKER_USERNAME),
+                config.get(MQTT_BROKER_SUBSCRIBER_TOPIC));
     }
 
     @Provides
