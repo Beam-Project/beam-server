@@ -18,48 +18,26 @@
  */
 package org.beamproject.server;
 
-import org.aeonbits.owner.ConfigFactory;
-import org.beamproject.common.util.ConfigWriter;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import java.io.File;
+import org.beamproject.server.view.CommandLineView;
 
 /**
- * This class initializes the server and holds {@link Config} and {@link Model}.
+ * The main class of this application.
  */
 public class App {
 
-    protected static ConfigWriter configWriter;
-    protected static Config config;
-    protected static Controller controller;
-    protected static Model model;
+    public final static String NAME = "beam-server";
+    public final static String POM_VERSION = "0.0.1"; // Do NOT change this, Maven replaces it.
+    public final static String WEBSITE = "https://www.beamproject.org/";
+    public final static String CONFIG_DIRECTORY_PATH = System.getProperty("user.home") + File.separator + ".beam" + File.separator;
+    public final static String CONFIG_PATH = CONFIG_DIRECTORY_PATH + "server.conf";
+    private static CommandLineView commandLineView;
 
-    static {
-        loadConfig();
-        loadControllerAndModel();
+    public static void main(String args[]) {
+        Injector appInjector = Guice.createInjector(new AppModule());
+        commandLineView = appInjector.getInstance(CommandLineView.class);
+        commandLineView.parse(args);
     }
-
-    private static void loadConfig() {
-        configWriter = new ConfigWriter();
-        config = ConfigFactory.create(Config.class);
-    }
-
-    private static void loadControllerAndModel() {
-        controller = new Controller();
-        model = new Model();
-    }
-
-    public static Config getConfig() {
-        return config;
-    }
-
-    public static Controller getController() {
-        return controller;
-    }
-
-    public static Model getModel() {
-        return model;
-    }
-
-    public static void storeConfig() {
-        configWriter.writeConfig(config, Config.FOLDER, Config.FILE);
-    }
-
 }
