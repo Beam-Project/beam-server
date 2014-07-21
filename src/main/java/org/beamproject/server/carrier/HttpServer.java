@@ -18,6 +18,8 @@
  */
 package org.beamproject.server.carrier;
 
+import org.beamproject.common.carrier.CarrierException;
+import org.beamproject.common.carrier.ServerCarrier;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.net.InetSocketAddress;

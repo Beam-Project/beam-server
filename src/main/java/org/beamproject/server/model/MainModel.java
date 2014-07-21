@@ -18,6 +18,8 @@
  */
 package org.beamproject.server.model;
 
+import org.beamproject.common.carrier.ClientCarrierModel;
+import org.beamproject.common.carrier.ServerCarrierModel;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -39,7 +41,7 @@ import org.beamproject.common.crypto.BouncyCastleIntegrator;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.util.Base58;
 import org.beamproject.common.util.Executor;
-import org.beamproject.server.carrier.CarrierException;
+import org.beamproject.common.carrier.CarrierException;
 import org.beamproject.server.util.Config;
 
 @Singleton

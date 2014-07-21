@@ -18,9 +18,11 @@
  */
 package org.beamproject.server.carrier;
 
+import org.beamproject.common.carrier.CarrierException;
+import org.beamproject.common.carrier.ClientCarrier;
 import com.google.inject.Inject;
 import java.util.concurrent.ConcurrentHashMap;
-import org.beamproject.server.model.ClientCarrierModel;
+import org.beamproject.common.carrier.ClientCarrierModel;
 import org.beamproject.common.Participant;
 import org.beamproject.common.User;
 import org.beamproject.common.util.Executor;

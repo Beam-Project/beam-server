@@ -18,6 +18,7 @@
  */
 package org.beamproject.server.carrier;
 
+import org.beamproject.common.carrier.ServerCarrier;
 import org.beamproject.server.ExecutorFake;
 import org.beamproject.server.util.Config;
 import static org.easymock.EasyMock.createMock;

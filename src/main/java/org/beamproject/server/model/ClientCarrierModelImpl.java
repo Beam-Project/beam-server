@@ -18,11 +18,12 @@
  */
 package org.beamproject.server.model;
 
+import org.beamproject.common.carrier.ClientCarrierModel;
 import com.google.inject.Inject;
 import lombok.experimental.Delegate;
 import org.beamproject.common.util.Executor;
 import org.beamproject.common.util.Task;
-import org.beamproject.server.carrier.ClientCarrier;
+import org.beamproject.common.carrier.ClientCarrier;
 
 /**
  * This class implements the {@link ClientCarrierModel} interface and therefore

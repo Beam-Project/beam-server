@@ -18,6 +18,7 @@
  */
 package org.beamproject.server.carrier;
 
+import org.beamproject.common.carrier.CarrierException;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;

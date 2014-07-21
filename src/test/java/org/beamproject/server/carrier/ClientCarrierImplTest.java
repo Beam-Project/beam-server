@@ -18,9 +18,10 @@
  */
 package org.beamproject.server.carrier;
 
+import org.beamproject.common.carrier.CarrierException;
 import org.beamproject.common.User;
 import org.beamproject.server.ExecutorFake;
-import org.beamproject.server.model.ClientCarrierModel;
+import org.beamproject.common.carrier.ClientCarrierModel;
 import static org.easymock.EasyMock.*;
 import org.easymock.IAnswer;
 import org.junit.Test;

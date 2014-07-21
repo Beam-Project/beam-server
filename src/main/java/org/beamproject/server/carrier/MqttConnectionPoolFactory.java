@@ -18,6 +18,7 @@
  */
 package org.beamproject.server.carrier;
 
+import org.beamproject.common.carrier.CarrierException;
 import com.google.inject.Inject;
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;

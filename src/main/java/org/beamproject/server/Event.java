@@ -1,7 +1,7 @@
 package org.beamproject.server;
 
 import com.google.common.eventbus.EventBus;
-import org.beamproject.server.carrier.Carrier;
+import org.beamproject.common.carrier.Carrier;
 import org.beamproject.server.model.MainModel;
 import org.beamproject.server.util.Config;
 

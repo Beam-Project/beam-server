@@ -18,6 +18,8 @@
  */
 package org.beamproject.server.carrier;
 
+import org.beamproject.common.carrier.CarrierException;
+import org.beamproject.common.carrier.ClientCarrier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.beamproject.common.util.Exceptions;

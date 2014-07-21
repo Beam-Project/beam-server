@@ -18,8 +18,10 @@
  */
 package org.beamproject.server.carrier;
 
+import org.beamproject.common.carrier.CarrierException;
+import org.beamproject.common.carrier.ServerCarrier;
 import com.google.inject.Inject;
-import org.beamproject.server.model.ServerCarrierModel;
+import org.beamproject.common.carrier.ServerCarrierModel;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Server;
 import org.beamproject.common.util.Executor;

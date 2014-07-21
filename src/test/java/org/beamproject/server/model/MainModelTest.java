@@ -18,6 +18,8 @@
  */
 package org.beamproject.server.model;
 
+import org.beamproject.common.carrier.ClientCarrierModel;
+import org.beamproject.common.carrier.ServerCarrierModel;
 import java.security.Security;
 import java.util.Properties;
 import org.beamproject.server.BusFake;
@@ -28,7 +30,7 @@ import org.beamproject.common.Server;
 import org.beamproject.common.crypto.BouncyCastleIntegrator;
 import org.beamproject.server.App;
 import org.beamproject.server.ExecutorFake;
-import org.beamproject.server.carrier.CarrierException;
+import org.beamproject.common.carrier.CarrierException;
 import org.beamproject.server.util.Config;
 import static org.easymock.EasyMock.*;
 import org.junit.After;
