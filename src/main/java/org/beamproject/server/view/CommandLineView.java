@@ -143,8 +143,8 @@ public class CommandLineView {
                 break;
             case CARRIERS_STARTED:
                 System.out.println("MQTT Carrier connected to broker at "
-                        + config.get(MQTT_BROKER_HOST) + ":" + config.get(MQTT_BROKER_PORT)
-                        + ", subscribed to '" + config.get(MQTT_BROKER_SUBSCRIBER_TOPIC) + "'.");
+                        + config.get(MQTT_HOST) + ":" + config.get(MQTT_PORT)
+                        + ", subscribed to '" + config.get(MQTT_SUBSCRIBER_TOPIC) + "'.");
                 System.out.println("HTTP Carrier listening on port "
                         + config.get(SERVER_PORT) + ".");
                 break;

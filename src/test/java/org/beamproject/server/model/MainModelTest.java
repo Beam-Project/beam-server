@@ -42,10 +42,10 @@ public class MainModelTest {
 
     private final Server SERVER = Server.generate();
     private final String PORT = "8080";
-    private final String MQTT_HOST = "127.0.0.1";
-    private final String MQTT_PORT = "3625";
-    private final String MQTT_USERNAME = "Mr Spock";
-    private final String MQTT_SUBSCRIBER_TOPIC = "in";
+    private final String TEST_MQTT_HOST = "127.0.0.1";
+    private final String TEST_MQTT_PORT = "3625";
+    private final String TEST_MQTT_USERNAME = "Mr Spock";
+    private final String TEST_MQTT_SUBSCRIBER_TOPIC = "in";
     private BusFake busFake;
     private ExecutorFake executorFake;
     private MainModel model;
@@ -91,10 +91,10 @@ public class MainModelTest {
         assertEquals(PRIVATE_KEY, model.getMissingConfigKeys().remove());
         assertEquals(SERVER_URL, model.getMissingConfigKeys().remove());
         assertEquals(SERVER_PORT, model.getMissingConfigKeys().remove());
-        assertEquals(MQTT_BROKER_HOST, model.getMissingConfigKeys().remove());
-        assertEquals(MQTT_BROKER_PORT, model.getMissingConfigKeys().remove());
-        assertEquals(MQTT_BROKER_USERNAME, model.getMissingConfigKeys().remove());
-        assertEquals(MQTT_BROKER_SUBSCRIBER_TOPIC, model.getMissingConfigKeys().remove());
+        assertEquals(MQTT_HOST, model.getMissingConfigKeys().remove());
+        assertEquals(MQTT_PORT, model.getMissingConfigKeys().remove());
+        assertEquals(MQTT_USERNAME, model.getMissingConfigKeys().remove());
+        assertEquals(MQTT_SUBSCRIBER_TOPIC, model.getMissingConfigKeys().remove());
     }
 
     @Test
@@ -111,12 +111,12 @@ public class MainModelTest {
     private void fillConfig() {
         config.set(PUBLIC_KEY, SERVER.getPublicKeyAsBase58());
         config.set(PRIVATE_KEY, SERVER.getPrivateKeyAsBase58());
-        config.set(SERVER_URL, SERVER.getUrl().toString());
+        config.set(SERVER_URL, SERVER.getHttpUrl().toString());
         config.set(SERVER_PORT, PORT);
-        config.set(MQTT_BROKER_HOST, MQTT_HOST);
-        config.set(MQTT_BROKER_PORT, MQTT_PORT);
-        config.set(MQTT_BROKER_USERNAME, MQTT_USERNAME);
-        config.set(MQTT_BROKER_SUBSCRIBER_TOPIC, MQTT_SUBSCRIBER_TOPIC);
+        config.set(MQTT_HOST, TEST_MQTT_HOST);
+        config.set(MQTT_PORT, TEST_MQTT_PORT);
+        config.set(MQTT_USERNAME, TEST_MQTT_USERNAME);
+        config.set(MQTT_SUBSCRIBER_TOPIC, TEST_MQTT_SUBSCRIBER_TOPIC);
     }
 
     @Test

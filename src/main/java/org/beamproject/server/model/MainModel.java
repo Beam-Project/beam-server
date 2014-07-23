@@ -23,6 +23,7 @@ import org.beamproject.common.carrier.ServerCarrierModel;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyPair;
@@ -48,8 +49,8 @@ import org.beamproject.server.util.Config;
 public class MainModel {
 
     private final Config.Key[] REQUIRED_CONFIG_KEYS = {PUBLIC_KEY, PRIVATE_KEY,
-        SERVER_URL, SERVER_PORT, MQTT_BROKER_HOST, MQTT_BROKER_PORT,
-        MQTT_BROKER_USERNAME, MQTT_BROKER_SUBSCRIBER_TOPIC};
+        SERVER_URL, SERVER_PORT, MQTT_HOST, MQTT_PORT,
+        MQTT_USERNAME, MQTT_SUBSCRIBER_TOPIC};
     private final EventBus bus;
     private final Executor executor;
     private final Config config;
@@ -102,13 +103,13 @@ public class MainModel {
 
     private void restoreServer() {
         try {
-            server = new Server(restoreUrl(), restoreKeyPair());
-        } catch (MalformedURLException ex) {
+            server = new Server(restoreMqttAddress(), restoreHttpUrl(), restoreKeyPair());
+        } catch (MalformedURLException | IllegalArgumentException ex) {
             bus.post(INVALID_CONFIG_SERVER_URL);
         }
     }
 
-    private URL restoreUrl() throws MalformedURLException {
+    private URL restoreHttpUrl() throws MalformedURLException {
         return new URL(config.get(SERVER_URL));
     }
 
@@ -116,6 +117,12 @@ public class MainModel {
         byte[] publicKeyBytes = Base58.decode(config.get(PUBLIC_KEY));
         byte[] privateKeyBytes = Base58.decode(config.get(PRIVATE_KEY));
         return EccKeyPairGenerator.fromBothKeys(publicKeyBytes, privateKeyBytes);
+    }
+
+    private InetSocketAddress restoreMqttAddress() {
+        String host = config.get(MQTT_HOST);
+        int port = Integer.parseInt(config.get(MQTT_PORT));
+        return new InetSocketAddress(host, port);
     }
 
     private void startCarriers() {

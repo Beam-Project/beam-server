@@ -95,10 +95,10 @@ public class AppModule extends AbstractModule {
     MqttConnectionPoolFactory providesMqttConnectionPoolFactory() {
         Config config = providesConfig();
         
-        return new MqttConnectionPoolFactory(config.get(MQTT_BROKER_HOST),
-                config.get(MQTT_BROKER_PORT),
-                config.get(MQTT_BROKER_USERNAME),
-                config.get(MQTT_BROKER_SUBSCRIBER_TOPIC));
+        return new MqttConnectionPoolFactory(config.get(MQTT_HOST),
+                config.get(MQTT_PORT),
+                config.get(MQTT_USERNAME),
+                config.get(MQTT_SUBSCRIBER_TOPIC));
     }
 
     @Provides

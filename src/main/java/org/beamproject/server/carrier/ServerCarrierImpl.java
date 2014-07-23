@@ -76,7 +76,7 @@ public class ServerCarrierImpl implements ServerCarrier {
 
                 try {
                     HttpConnection connection = connectionPool.borrowObject();
-                    connection.post(targetServer.getUrl(), message);
+                    connection.post(targetServer.getHttpUrl(), message);
                     connectionPool.returnObject(connection);
                 } catch (Exception ex) {
                     throw new CarrierException("The message could not be sent:" + ex.getMessage());

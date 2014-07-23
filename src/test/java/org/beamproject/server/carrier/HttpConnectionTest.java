@@ -25,7 +25,7 @@ import org.junit.Before;
 
 public class HttpConnectionTest {
 
-    private final URL SERVER_URL = Server.generate().getUrl();
+    private final URL SERVER_URL = Server.generate().getHttpUrl();
     private final byte[] MESSAGE = "myMessage".getBytes();
     private HttpConnection connection;
 

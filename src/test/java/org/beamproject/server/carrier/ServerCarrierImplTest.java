@@ -55,7 +55,7 @@ public class ServerCarrierImplTest {
     @Test
     public void testDeliverMessage() throws Exception {
         expect(connectionPool.borrowObject()).andReturn(connection);
-        connection.post(SERVER.getUrl(), MESSAGE);
+        connection.post(SERVER.getHttpUrl(), MESSAGE);
         expectLastCall();
         connectionPool.returnObject(connection);
         replay(connectionPool, connection);

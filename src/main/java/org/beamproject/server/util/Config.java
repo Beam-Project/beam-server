@@ -58,20 +58,20 @@ public class Config {
         /**
          * The host name of the MQTT broker used to connect to clients.
          */
-        MQTT_BROKER_HOST,
+        MQTT_HOST,
         /**
          * The port at which the MQTT broker listens.
          */
-        MQTT_BROKER_PORT,
+        MQTT_PORT,
         /**
          * The username of this beam-server for connecting to the MQTT broker.
          */
-        MQTT_BROKER_USERNAME,
+        MQTT_USERNAME,
         /**
          * The topic to which this beam-server has to subscribe to receive
          * incoming messages from its clients.
          */
-        MQTT_BROKER_SUBSCRIBER_TOPIC,
+        MQTT_SUBSCRIBER_TOPIC,
     }
     @Getter
     private final Properties properties;
