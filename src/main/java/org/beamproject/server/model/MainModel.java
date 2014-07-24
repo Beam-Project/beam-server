@@ -23,6 +23,8 @@ import org.beamproject.common.carrier.ServerCarrierModel;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.File;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -168,25 +170,29 @@ public class MainModel {
         newConfig.setProperty(PRIVATE_KEY.toString(), newServer.getPrivateKeyAsBase58());
 
         try {
-            files.storeProperies(newConfig, filename);
-        } catch (IllegalArgumentException ex) {
-            bus.post(INVALID_COMMAND_LINE_USAGE);
+            if (filename.substring(0, 1).contains("~")) {
+                filename = filename.replaceFirst("~", System.getProperty("user.home"));
+            }
+            
+            File file = new File(filename);
+            files.storeProperies(newConfig, file.getCanonicalPath());
+            bus.post(KEY_PAIR_STORED);
+        } catch (IllegalArgumentException | IOException ex) {
+            execptions.add("Could not write the key pair to file: " + ex.getMessage());
+            bus.post(COMMAND_LINE_EXCEPTION);
         }
     }
 
     public void shutdown() {
-        System.out.print(" Shutting down... ");
         storeConfig();
 
         try {
             clientCarrierModel.shutdown();
             serverCarrierModel.shutdown();
         } catch (IllegalStateException ex) {
-            System.out.println("Did not shoot down anything.");
         }
 
         executor.shutdown();
-        System.out.println("done.");
     }
 
 }

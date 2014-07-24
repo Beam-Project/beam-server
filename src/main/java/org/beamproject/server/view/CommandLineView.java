@@ -105,15 +105,7 @@ public class CommandLineView {
         if (commandLine.hasOption(OPTION_g[0])) {
             hasOptions = true;
             String filename = commandLine.getOptionValue(OPTION_g[0]);
-
-            if (filename == null || filename.isEmpty()) {
-                printCommandLineMisusage();
-            } else {
-                model.generateKeyPair(filename);
-                System.out.println("Key pair generated and stored in '" + filename + "'.");
-                System.out.println(" - " + PUBLIC_KEY + ": The public key encoded as X509, represented as Base58 string.");
-                System.out.println(" - " + PRIVATE_KEY + ": The private key encoded as PKCS8, represented as Base58 string.");
-            }
+            model.generateKeyPair(filename);
         }
 
         if (commandLine.hasOption(OPTION_h[0])) {
@@ -137,6 +129,12 @@ public class CommandLineView {
                 break;
             case INVALID_COMMAND_LINE_USAGE:
                 printCommandLineMisusage();
+                break;
+            case COMMAND_LINE_EXCEPTION:
+                printCommandLineExceptions();
+                break;
+            case KEY_PAIR_STORED:
+                printKeyPairStoredMessage();
                 break;
             case CARRIER_EXCEPTION:
                 System.out.println(model.getExecptions().poll());
@@ -170,6 +168,18 @@ public class CommandLineView {
     private void printCommandLineMisusage() {
         System.out.println("This command could not be understood.");
         printHelp();
+    }
+
+    private void printCommandLineExceptions() {
+        while (!model.getExecptions().isEmpty()) {
+            System.out.println(model.getExecptions().remove());
+        }
+    }
+
+    private void printKeyPairStoredMessage() {
+        System.out.println("Key pair successfully generated and stored.");
+        System.out.println(" - " + PUBLIC_KEY + ": The public key encoded as X509, represented as Base58 string.");
+        System.out.println(" - " + PRIVATE_KEY + ": The private key encoded as PKCS8, represented as Base58 string.");
     }
 
     private void printHelp() {

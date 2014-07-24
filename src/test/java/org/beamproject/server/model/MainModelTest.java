@@ -186,7 +186,7 @@ public class MainModelTest {
 
         model.generateKeyPair("\\//\\//\\//////\\\\  ");
 
-        assertEquals(INVALID_COMMAND_LINE_USAGE, busFake.getNextEvent());
+        assertEquals(COMMAND_LINE_EXCEPTION, busFake.getNextEvent());
         verify(files);
     }
 
@@ -198,6 +198,7 @@ public class MainModelTest {
 
         model.generateKeyPair("test.conf");
 
+        assertEquals(KEY_PAIR_STORED, busFake.getNextEvent());
         verify(files);
     }
 
