@@ -1,6 +1,7 @@
 package org.beamproject.server;
 
 import com.google.common.eventbus.EventBus;
+import org.beamproject.common.Server;
 import org.beamproject.common.carrier.Carrier;
 import org.beamproject.server.model.MainModel;
 import org.beamproject.server.util.Config;
@@ -35,6 +36,11 @@ public enum Event {
      * successfully generated and stored.
      */
     KEY_PAIR_STORED,
+    /**
+     * This event is sent by the {@link MainModel} when the {@link Server}
+     * configuration was correctly loaded.
+     */
+    SERVER_CONFIGURATION_LOADED,
     /**
      * This event is sent by the {@link MainModel} when there was a problem with
      * at least one {@link Carrier}.

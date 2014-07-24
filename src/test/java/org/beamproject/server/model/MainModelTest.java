@@ -132,6 +132,7 @@ public class MainModelTest {
 
         verify(clientCarrierModel, serverCarrierModel);
         assertEquals(SERVER, model.getServer());
+        assertEquals(SERVER_CONFIGURATION_LOADED, busFake.getNextEvent());
         assertEquals(CARRIERS_STARTED, busFake.getNextEvent());
     }
 
@@ -147,6 +148,7 @@ public class MainModelTest {
         model.bootstrap();
 
         verify(clientCarrierModel, serverCarrierModel);
+        assertEquals(SERVER_CONFIGURATION_LOADED, busFake.getNextEvent());
         assertEquals(CARRIER_EXCEPTION, busFake.getNextEvent());
         assertTrue(model.getExecptions().poll().contains("myException"));
     }
@@ -163,6 +165,7 @@ public class MainModelTest {
         model.bootstrap();
 
         verify(clientCarrierModel, serverCarrierModel);
+        assertEquals(SERVER_CONFIGURATION_LOADED, busFake.getNextEvent());
         assertEquals(CARRIER_EXCEPTION, busFake.getNextEvent());
         assertTrue(model.getExecptions().poll().contains("myException"));
     }

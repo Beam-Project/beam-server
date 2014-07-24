@@ -139,6 +139,9 @@ public class CommandLineView {
             case CARRIER_EXCEPTION:
                 System.out.println(model.getExecptions().poll());
                 break;
+            case SERVER_CONFIGURATION_LOADED:
+                printServerConfigurationLoaded();
+                break;
             case CARRIERS_STARTED:
                 System.out.println("MQTT Carrier connected to broker at "
                         + config.get(MQTT_HOST) + ":" + config.get(MQTT_PORT)
@@ -180,6 +183,11 @@ public class CommandLineView {
         System.out.println("Key pair successfully generated and stored.");
         System.out.println(" - " + PUBLIC_KEY + ": The public key encoded as X509, represented as Base58 string.");
         System.out.println(" - " + PRIVATE_KEY + ": The private key encoded as PKCS8, represented as Base58 string.");
+    }
+
+    private void printServerConfigurationLoaded() {
+        System.out.println("Server configruation is complete. Beam address is:");
+        System.out.println(model.getServer().getAddress());
     }
 
     private void printHelp() {

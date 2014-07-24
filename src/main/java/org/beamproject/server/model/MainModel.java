@@ -106,6 +106,7 @@ public class MainModel {
     private void restoreServer() {
         try {
             server = new Server(restoreMqttAddress(), restoreHttpUrl(), restoreKeyPair());
+            bus.post(SERVER_CONFIGURATION_LOADED);
         } catch (MalformedURLException | IllegalArgumentException ex) {
             bus.post(INVALID_CONFIG_SERVER_URL);
         }
