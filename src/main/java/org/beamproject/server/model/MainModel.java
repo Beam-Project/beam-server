@@ -170,17 +170,20 @@ public class MainModel {
         newConfig.setProperty(PRIVATE_KEY.toString(), newServer.getPrivateKeyAsBase58());
 
         try {
-            if (filename.substring(0, 1).contains("~")) {
-                filename = filename.replaceFirst("~", System.getProperty("user.home"));
-            }
-            
-            File file = new File(filename);
-            files.storeProperies(newConfig, file.getCanonicalPath());
+            files.storeProperies(newConfig, getCanonicalFilePath(filename));
             bus.post(KEY_PAIR_STORED);
         } catch (IllegalArgumentException | IOException ex) {
             execptions.add("Could not write the key pair to file: " + ex.getMessage());
             bus.post(COMMAND_LINE_EXCEPTION);
         }
+    }
+
+    private String getCanonicalFilePath(String filename) throws IOException {
+        if (filename.substring(0, 1).contains("~")) {
+            filename = filename.replaceFirst("~", System.getProperty("user.home"));
+        }
+
+        return new File(filename).getAbsolutePath();
     }
 
     public void shutdown() {
