@@ -14,10 +14,6 @@ public enum Event {
      * This event is sent by the {@link MainModel} when at least one required
      * {@link Config} entry is missing.
      */
-    /**
-     * This event is sent by the {@link MainModel} when at least one required
-     * {@link Config} entry is missing.
-     */
     MISSING_CONFIG_ENTRIES,
     /**
      * This event is sent by the {@link MainModel} when the SERVER_URL in the
@@ -29,6 +25,16 @@ public enum Event {
      * been used the wrong way. This shows then the command line help.
      */
     INVALID_COMMAND_LINE_USAGE,
+    /**
+     * This event is sent by the {@link MainModel} when the command line usage
+     * has led to an exception. This shows then the exceptions.
+     */
+    COMMAND_LINE_EXCEPTION,
+    /**
+     * This event is sent by the {@link MainModel} when the key pair was
+     * successfully generated and stored.
+     */
+    KEY_PAIR_STORED,
     /**
      * This event is sent by the {@link MainModel} when there was a problem with
      * at least one {@link Carrier}.
