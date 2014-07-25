@@ -51,7 +51,7 @@ import org.beamproject.server.util.Config;
 public class MainModel {
 
     private final Config.Key[] REQUIRED_CONFIG_KEYS = {PUBLIC_KEY, PRIVATE_KEY,
-        SERVER_URL, SERVER_PORT, MQTT_HOST, MQTT_PORT,
+        SERVER_URL, MQTT_HOST, MQTT_PORT,
         MQTT_USERNAME, MQTT_SUBSCRIBER_TOPIC};
     private final EventBus bus;
     private final Executor executor;

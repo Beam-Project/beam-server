@@ -51,11 +51,6 @@ public class Config {
          */
         SERVER_URL,
         /**
-         * The port at which the {@link Server} listens for incoming HTTP
-         * connections.
-         */
-        SERVER_PORT,
-        /**
          * The host name of the MQTT broker used to connect to clients.
          */
         MQTT_HOST,

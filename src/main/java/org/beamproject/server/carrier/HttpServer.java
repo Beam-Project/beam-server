@@ -23,7 +23,9 @@ import org.beamproject.common.carrier.ServerCarrier;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.SocketAddress;
+import java.net.URL;
 import lombok.Setter;
 import org.beamproject.common.util.Base64;
 import org.beamproject.common.util.Executor;
@@ -97,9 +99,14 @@ public class HttpServer implements Container {
 
     private int getPort() {
         try {
-            return Integer.parseInt(config.get(Config.Key.SERVER_PORT));
-        } catch (NumberFormatException | NullPointerException ex) {
-            throw new IllegalStateException("The port is not valid.");
+            URL url = new URL(config.get(Config.Key.SERVER_URL));
+            int candidate = url.getPort();
+            
+            return candidate == -1
+                    ? url.getDefaultPort()
+                    : candidate;
+        } catch (MalformedURLException | NullPointerException ex) {
+            throw new IllegalStateException("The server address is not valid: " + ex.getMessage());
         }
     }
 

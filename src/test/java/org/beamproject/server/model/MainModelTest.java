@@ -90,7 +90,6 @@ public class MainModelTest {
         assertEquals(PUBLIC_KEY, model.getMissingConfigKeys().remove());
         assertEquals(PRIVATE_KEY, model.getMissingConfigKeys().remove());
         assertEquals(SERVER_URL, model.getMissingConfigKeys().remove());
-        assertEquals(SERVER_PORT, model.getMissingConfigKeys().remove());
         assertEquals(MQTT_HOST, model.getMissingConfigKeys().remove());
         assertEquals(MQTT_PORT, model.getMissingConfigKeys().remove());
         assertEquals(MQTT_USERNAME, model.getMissingConfigKeys().remove());
@@ -112,7 +111,6 @@ public class MainModelTest {
         config.set(PUBLIC_KEY, SERVER.getPublicKeyAsBase58());
         config.set(PRIVATE_KEY, SERVER.getPrivateKeyAsBase58());
         config.set(SERVER_URL, SERVER.getHttpUrl().toString());
-        config.set(SERVER_PORT, PORT);
         config.set(MQTT_HOST, TEST_MQTT_HOST);
         config.set(MQTT_PORT, TEST_MQTT_PORT);
         config.set(MQTT_USERNAME, TEST_MQTT_USERNAME);
