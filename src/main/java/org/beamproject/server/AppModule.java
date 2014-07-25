@@ -96,7 +96,7 @@ public class AppModule extends AbstractModule {
         Config config = providesConfig();
         
         return new MqttConnectionPoolFactory(config.get(MQTT_HOST),
-                config.get(MQTT_PORT),
+                Integer.parseInt(config.get(MQTT_PORT)),
                 config.get(MQTT_USERNAME),
                 config.get(MQTT_SUBSCRIBER_TOPIC));
     }
