@@ -18,13 +18,14 @@
  */
 package org.beamproject.server.carrier;
 
+import com.google.inject.Inject;
 import org.beamproject.common.carrier.CarrierException;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.logging.Level;
+import static java.util.logging.Level.INFO;
 import java.util.logging.Logger;
 import org.apache.http.HttpStatus;
 import org.beamproject.common.crypto.CryptoPacker;
@@ -39,6 +40,8 @@ public class HttpConnection {
     private final static String USER_AGENT = "Beam";
     private final static String ENCODING = "UTF-8";
     private final static String POST_KEY = "data";
+    @Inject
+    Logger log;
     private HttpURLConnection connection;
     private URL recipient;
     private byte[] message;
@@ -101,9 +104,9 @@ public class HttpConnection {
 
     private void handleResponseCode() throws IOException {
         if (connection.getResponseCode() != HttpStatus.SC_NO_CONTENT) {
-            Logger.getLogger(HttpConnection.class.getName()).log(Level.INFO,
-                    "The connection {0} returned the response code {1} instead "
-                    + "of 204.", new Object[]{connection.toString(),
+            log.log(INFO, "The connection {0} returned the response code {1} "
+                    + "instead of 204.",
+                    new Object[]{connection.toString(),
                         connection.getResponseCode()});
         }
     }
