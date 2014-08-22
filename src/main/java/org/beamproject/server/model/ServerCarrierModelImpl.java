@@ -21,6 +21,7 @@ package org.beamproject.server.model;
 import org.beamproject.common.carrier.ServerCarrierModel;
 import com.google.inject.Inject;
 import lombok.experimental.Delegate;
+import org.beamproject.common.Message;
 import org.beamproject.common.util.Executor;
 import org.beamproject.common.util.Task;
 import org.beamproject.common.carrier.ServerCarrier;
@@ -51,6 +52,11 @@ public class ServerCarrierModelImpl implements ServerCarrierModel {
                 System.out.println("consumed message in server carrier: " + new String(message));
             }
         });
+    }
+
+    @Override
+    public void encryptAndSend(Message message) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
