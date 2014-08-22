@@ -20,9 +20,9 @@ package org.beamproject.server.model;
 
 import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
-import org.beamproject.common.Message;
-import static org.beamproject.common.MessageField.ContentField.*;
-import static org.beamproject.common.MessageField.ContentField.TypeValue.*;
+import org.beamproject.common.message.Message;
+import static org.beamproject.common.message.MessageField.ContentField.*;
+import static org.beamproject.common.message.MessageField.ContentField.TypeValue.*;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Server;
 import org.beamproject.common.User;

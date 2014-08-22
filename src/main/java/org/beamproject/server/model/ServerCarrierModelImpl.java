@@ -21,7 +21,7 @@ package org.beamproject.server.model;
 import org.beamproject.common.carrier.ServerCarrierModel;
 import com.google.inject.Inject;
 import lombok.experimental.Delegate;
-import org.beamproject.common.Message;
+import org.beamproject.common.message.Message;
 import org.beamproject.common.util.Executor;
 import org.beamproject.common.util.Task;
 import org.beamproject.common.carrier.ServerCarrier;

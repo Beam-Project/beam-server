@@ -18,8 +18,8 @@
  */
 package org.beamproject.server.carrier;
 
-import org.beamproject.common.Message;
-import static org.beamproject.common.MessageField.ContentField.*;
+import org.beamproject.common.message.Message;
+import static org.beamproject.common.message.MessageField.ContentField.*;
 import org.beamproject.common.Participant;
 import org.beamproject.common.carrier.MessageException;
 import static org.beamproject.common.crypto.EccKeyPairGenerator.fromPublicKey;

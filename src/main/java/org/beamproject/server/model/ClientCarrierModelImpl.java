@@ -24,7 +24,7 @@ import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
 import lombok.experimental.Delegate;
-import org.beamproject.common.Message;
+import org.beamproject.common.message.Message;
 import org.beamproject.common.util.Executor;
 import org.beamproject.common.util.Task;
 import org.beamproject.common.carrier.ClientCarrier;

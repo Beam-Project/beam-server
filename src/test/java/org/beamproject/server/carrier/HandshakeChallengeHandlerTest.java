@@ -18,11 +18,11 @@
  */
 package org.beamproject.server.carrier;
 
-import org.beamproject.common.Message;
-import static org.beamproject.common.MessageField.ContentField.HSNONCE;
-import static org.beamproject.common.MessageField.ContentField.HSPUBKEY;
-import static org.beamproject.common.MessageField.ContentField.TYP;
-import static org.beamproject.common.MessageField.ContentField.TypeValue.HS_RESPONSE;
+import org.beamproject.common.message.Message;
+import static org.beamproject.common.message.MessageField.ContentField.HSNONCE;
+import static org.beamproject.common.message.MessageField.ContentField.HSPUBKEY;
+import static org.beamproject.common.message.MessageField.ContentField.TYP;
+import static org.beamproject.common.message.MessageField.ContentField.TypeValue.HS_RESPONSE;
 import org.beamproject.common.Participant;
 import org.beamproject.common.carrier.MessageException;
 import static org.beamproject.common.crypto.EccKeyPairGenerator.fromPublicKey;
