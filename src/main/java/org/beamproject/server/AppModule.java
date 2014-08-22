@@ -22,9 +22,16 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.SubscriberExceptionContext;
 import com.google.common.eventbus.SubscriberExceptionHandler;
 import com.google.inject.AbstractModule;
+import com.google.inject.MembersInjector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
+import com.google.inject.matcher.Matchers;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
+import java.lang.reflect.Field;
 import java.util.Properties;
+import java.util.logging.Logger;
 import org.beamproject.server.model.MainModel;
 import org.beamproject.common.util.Files;
 import org.beamproject.common.util.Executor;
@@ -38,6 +45,8 @@ import org.beamproject.server.carrier.ServerCarrierImpl;
 import org.beamproject.common.carrier.ClientCarrierModel;
 import org.beamproject.server.model.ClientCarrierModelImpl;
 import org.beamproject.common.carrier.ServerCarrierModel;
+import org.beamproject.common.crypto.CryptoPackerPool;
+import org.beamproject.common.crypto.CryptoPackerPoolFactory;
 import org.beamproject.server.model.ServerCarrierModelImpl;
 import org.beamproject.server.util.Config;
 import static org.beamproject.server.util.Config.Key.*;
@@ -60,6 +69,9 @@ public class AppModule extends AbstractModule {
 
         // Utils
         bind(Files.class);
+
+        // Logger
+        bindListener(Matchers.any(), new LogTypeListener());
     }
 
     @Provides
@@ -94,7 +106,7 @@ public class AppModule extends AbstractModule {
     @Singleton
     MqttConnectionPoolFactory providesMqttConnectionPoolFactory() {
         Config config = providesConfig();
-        
+
         return new MqttConnectionPoolFactory(config.get(MQTT_HOST),
                 Integer.parseInt(config.get(MQTT_PORT)),
                 config.get(MQTT_USERNAME),
@@ -105,6 +117,46 @@ public class AppModule extends AbstractModule {
     @Singleton
     HttpConnectionPoolFactory providesHttpConnectionPoolFactory() {
         return new HttpConnectionPoolFactory();
+    }
+
+    @Provides
+    @Singleton
+    CryptoPackerPool providesCryptoPackerPool() {
+        CryptoPackerPoolFactory factory = new CryptoPackerPoolFactory();
+        return new CryptoPackerPool(factory);
+    }
+
+    private class LogTypeListener implements TypeListener {
+
+        @Override
+        public <T> void hear(TypeLiteral<T> typeLiteral, TypeEncounter<T> typeEncounter) {
+            for (Field field : typeLiteral.getRawType().getDeclaredFields()) {
+                if (field.getType() == Logger.class) {
+                    typeEncounter.register(new LogMemberInjector<T>(field));
+                }
+            }
+        }
+    }
+
+    private class LogMemberInjector<T> implements MembersInjector<T> {
+
+        private final Field field;
+        private final Logger logger;
+
+        LogMemberInjector(Field field) {
+            this.field = field;
+            this.logger = Logger.getLogger(field.getDeclaringClass().getName());
+            field.setAccessible(true);
+        }
+
+        @Override
+        public void injectMembers(T t) {
+            try {
+                field.set(t, logger);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 }
