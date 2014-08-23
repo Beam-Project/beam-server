@@ -31,6 +31,7 @@ import org.beamproject.common.crypto.CryptoPacker;
 import org.beamproject.common.crypto.CryptoPackerPool;
 import org.beamproject.common.crypto.CryptoPackerPoolFactory;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
+import static org.beamproject.common.crypto.EccKeyPairGenerator.fromPublicKey;
 import org.beamproject.common.crypto.HandshakeResponder;
 import org.beamproject.server.ExecutorFake;
 import org.beamproject.server.util.HandshakeStorage;
@@ -45,7 +46,7 @@ public class ClientCarrierModelImplTest {
 
     private final CryptoPacker PACKER = new CryptoPacker();
     private final User USER = User.generate();
-    private final Participant USER_WITH_ONLY_PUBLIC_KEY = new Participant(EccKeyPairGenerator.fromPublicKey(USER.getPublicKeyAsBytes()));
+    private final Participant USER_WITH_ONLY_PUBLIC_KEY = new Participant(fromPublicKey(USER.getPublicKeyAsBytes()));
     private final Server SERVER = Server.generate();
     private MainModel mainModel;
     private ClientCarrier carrier;

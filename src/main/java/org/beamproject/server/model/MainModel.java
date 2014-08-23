@@ -40,11 +40,11 @@ import static org.beamproject.server.util.Config.Key.*;
 import org.beamproject.common.crypto.EncryptedConfig;
 import org.beamproject.common.util.Files;
 import org.beamproject.common.Server;
-import org.beamproject.common.crypto.BouncyCastleIntegrator;
-import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.util.Base58;
 import org.beamproject.common.util.Executor;
 import org.beamproject.common.carrier.CarrierException;
+import static org.beamproject.common.crypto.BouncyCastleIntegrator.initBouncyCastleProvider;
+import static org.beamproject.common.crypto.EccKeyPairGenerator.fromBothKeys;
 import org.beamproject.server.util.Config;
 
 @Singleton
@@ -80,7 +80,7 @@ public class MainModel {
     }
 
     public void bootstrap() {
-        BouncyCastleIntegrator.initBouncyCastleProvider();
+        initBouncyCastleProvider();
 
         if (isConfigSufficient()) {
             restoreServer();
@@ -119,7 +119,7 @@ public class MainModel {
     private KeyPair restoreKeyPair() {
         byte[] publicKeyBytes = Base58.decode(config.get(PUBLIC_KEY));
         byte[] privateKeyBytes = Base58.decode(config.get(PRIVATE_KEY));
-        return EccKeyPairGenerator.fromBothKeys(publicKeyBytes, privateKeyBytes);
+        return fromBothKeys(publicKeyBytes, privateKeyBytes);
     }
 
     private InetSocketAddress restoreMqttAddress() {

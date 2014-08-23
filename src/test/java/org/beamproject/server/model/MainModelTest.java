@@ -27,10 +27,10 @@ import static org.beamproject.server.Event.*;
 import static org.beamproject.server.util.Config.Key.*;
 import org.beamproject.common.util.Files;
 import org.beamproject.common.Server;
-import org.beamproject.common.crypto.BouncyCastleIntegrator;
 import org.beamproject.server.App;
 import org.beamproject.server.ExecutorFake;
 import org.beamproject.common.carrier.CarrierException;
+import static org.beamproject.common.crypto.BouncyCastleIntegrator.PROVIDER_NAME;
 import org.beamproject.server.util.Config;
 import static org.easymock.EasyMock.*;
 import org.junit.After;
@@ -73,11 +73,11 @@ public class MainModelTest {
 
     @Test
     public void testBootstrapOnBouncyCastleIntegration() {
-        Security.removeProvider(BouncyCastleIntegrator.PROVIDER_NAME);
+        Security.removeProvider(PROVIDER_NAME);
 
         model.bootstrap();
 
-        assertTrue(Security.getProvider(BouncyCastleIntegrator.PROVIDER_NAME) != null);
+        assertTrue(Security.getProvider(PROVIDER_NAME) != null);
         busFake = new BusFake(); // to verify empty
     }
 
