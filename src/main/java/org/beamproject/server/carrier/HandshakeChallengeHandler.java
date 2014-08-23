@@ -26,9 +26,9 @@ import static org.beamproject.common.crypto.EccKeyPairGenerator.fromPublicKey;
 import org.beamproject.common.crypto.Handshake;
 import org.beamproject.common.crypto.HandshakeException;
 import org.beamproject.common.crypto.HandshakeResponder;
-import org.beamproject.common.message.ContentFieldMessageValidator;
-import org.beamproject.common.message.HandshakeNonceMessageValidator;
-import org.beamproject.common.message.HandshakePublicKeyMessageValidator;
+import org.beamproject.common.message.ContentFieldValidator;
+import org.beamproject.common.message.HandshakeNonceValidator;
+import org.beamproject.common.message.HandshakePublicKeyValidator;
 import org.beamproject.common.message.MessageHandler;
 import org.beamproject.server.util.HandshakeStorage;
 
@@ -44,9 +44,9 @@ public class HandshakeChallengeHandler extends MessageHandler {
     private Participant remoteParticipant;
 
     public HandshakeChallengeHandler(HandshakeStorage<HandshakeResponder> responders) {
-        super(new ContentFieldMessageValidator(TYP, HS_NONCE, HS_PUBKEY),
-                new HandshakeNonceMessageValidator(),
-                new HandshakePublicKeyMessageValidator());
+        super(new ContentFieldValidator(TYP, HS_NONCE, HS_PUBKEY),
+                new HandshakeNonceValidator(),
+                new HandshakePublicKeyValidator());
         this.handshakeStorage = responders;
     }
 
