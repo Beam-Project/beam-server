@@ -22,8 +22,8 @@ import org.beamproject.common.carrier.ServerCarrier;
 import org.beamproject.server.ExecutorFake;
 import org.beamproject.server.util.Config;
 import static org.easymock.EasyMock.createMock;
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 
 public class HttpServerTest {
 

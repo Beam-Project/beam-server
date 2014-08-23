@@ -18,8 +18,6 @@
  */
 package org.beamproject.server.carrier;
 
-import org.beamproject.common.carrier.CarrierException;
-import org.beamproject.common.carrier.ServerCarrier;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -27,6 +25,8 @@ import java.net.MalformedURLException;
 import java.net.SocketAddress;
 import java.net.URL;
 import lombok.Setter;
+import org.beamproject.common.carrier.CarrierException;
+import org.beamproject.common.carrier.ServerCarrier;
 import org.beamproject.common.util.Base64;
 import org.beamproject.common.util.Executor;
 import org.beamproject.common.util.Task;

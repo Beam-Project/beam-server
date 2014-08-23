@@ -31,28 +31,35 @@ import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import java.lang.reflect.Field;
 import java.util.Properties;
+import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
-import org.beamproject.server.model.MainModel;
-import org.beamproject.common.util.Files;
-import org.beamproject.common.util.Executor;
-import org.beamproject.server.carrier.HttpConnectionPoolFactory;
+import static java.util.logging.Logger.getLogger;
 import org.beamproject.common.carrier.ClientCarrier;
 import org.beamproject.common.carrier.ClientCarrierImpl;
-import org.beamproject.server.carrier.HttpServer;
+import org.beamproject.common.carrier.ClientCarrierModel;
 import org.beamproject.common.carrier.MqttConnectionPoolFactory;
 import org.beamproject.common.carrier.ServerCarrier;
-import org.beamproject.server.carrier.ServerCarrierImpl;
-import org.beamproject.common.carrier.ClientCarrierModel;
-import org.beamproject.server.model.ClientCarrierModelImpl;
 import org.beamproject.common.carrier.ServerCarrierModel;
 import org.beamproject.common.crypto.CryptoPackerPool;
 import org.beamproject.common.crypto.CryptoPackerPoolFactory;
+import org.beamproject.common.util.Executor;
+import org.beamproject.common.util.Files;
+import org.beamproject.server.carrier.HttpConnectionPoolFactory;
+import org.beamproject.server.carrier.HttpServer;
+import org.beamproject.server.carrier.ServerCarrierImpl;
+import org.beamproject.server.model.ClientCarrierModelImpl;
+import org.beamproject.server.model.MainModel;
 import org.beamproject.server.model.ServerCarrierModelImpl;
 import org.beamproject.server.util.Config;
-import static org.beamproject.server.util.Config.Key.*;
+import static org.beamproject.server.util.Config.Key.MQTT_HOST;
+import static org.beamproject.server.util.Config.Key.MQTT_PORT;
+import static org.beamproject.server.util.Config.Key.MQTT_SUBSCRIBER_TOPIC;
+import static org.beamproject.server.util.Config.Key.MQTT_USERNAME;
 import org.beamproject.server.view.CommandLineView;
 
 public class AppModule extends AbstractModule {
+    
+    private final static Logger log = getLogger(AppModule.class.getName());
 
     @Override
     protected void configure() {
@@ -80,12 +87,21 @@ public class AppModule extends AbstractModule {
         return new EventBus(new SubscriberExceptionHandler() {
             @Override
             public void handleException(Throwable exception, SubscriberExceptionContext context) {
-                System.out.println("EventBus exception occurred: " + context.getSubscriber().toString());
-                System.out.println("Method: " + context.getSubscriberMethod().toString());
-                System.out.println("");
-                exception.printStackTrace();
+                log.log(WARNING, "EventBus exception occurred: {0}", context.getSubscriber().toString());
+                log.log(WARNING, "Method: {0}", context.getSubscriberMethod().toString());
+                log.log(WARNING, readStacktrace(exception));
             }
         });
+    }
+
+    private static String readStacktrace(Throwable throwable) {
+        StringBuilder builder = new StringBuilder();
+
+        for (StackTraceElement stacktrace1 : throwable.getStackTrace()) {
+            builder.append(stacktrace1.toString());
+        }
+
+        return builder.toString();
     }
 
     @Provides
@@ -145,7 +161,7 @@ public class AppModule extends AbstractModule {
 
         LogMemberInjector(Field field) {
             this.field = field;
-            this.logger = Logger.getLogger(field.getDeclaringClass().getName());
+            this.logger = getLogger(field.getDeclaringClass().getName());
             field.setAccessible(true);
         }
 

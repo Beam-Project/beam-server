@@ -18,25 +18,43 @@
  */
 package org.beamproject.server.model;
 
-import org.beamproject.common.carrier.ClientCarrierModel;
-import org.beamproject.common.carrier.ServerCarrierModel;
 import java.security.Security;
 import java.util.Properties;
-import org.beamproject.server.BusFake;
-import static org.beamproject.server.Event.*;
-import static org.beamproject.server.util.Config.Key.*;
-import org.beamproject.common.util.Files;
 import org.beamproject.common.Server;
-import org.beamproject.server.App;
-import org.beamproject.server.ExecutorFake;
 import org.beamproject.common.carrier.CarrierException;
+import org.beamproject.common.carrier.ClientCarrierModel;
+import org.beamproject.common.carrier.ServerCarrierModel;
 import static org.beamproject.common.crypto.BouncyCastleIntegrator.PROVIDER_NAME;
+import org.beamproject.common.util.Files;
+import org.beamproject.server.App;
+import org.beamproject.server.BusFake;
+import static org.beamproject.server.Event.CARRIERS_STARTED;
+import static org.beamproject.server.Event.CARRIER_EXCEPTION;
+import static org.beamproject.server.Event.COMMAND_LINE_EXCEPTION;
+import static org.beamproject.server.Event.INVALID_CONFIG_SERVER_URL;
+import static org.beamproject.server.Event.KEY_PAIR_STORED;
+import static org.beamproject.server.Event.MISSING_CONFIG_ENTRIES;
+import static org.beamproject.server.Event.SERVER_CONFIGURATION_LOADED;
+import org.beamproject.server.ExecutorFake;
 import org.beamproject.server.util.Config;
-import static org.easymock.EasyMock.*;
+import static org.beamproject.server.util.Config.Key.MQTT_HOST;
+import static org.beamproject.server.util.Config.Key.MQTT_PORT;
+import static org.beamproject.server.util.Config.Key.MQTT_SUBSCRIBER_TOPIC;
+import static org.beamproject.server.util.Config.Key.MQTT_USERNAME;
+import static org.beamproject.server.util.Config.Key.PRIVATE_KEY;
+import static org.beamproject.server.util.Config.Key.PUBLIC_KEY;
+import static org.beamproject.server.util.Config.Key.SERVER_URL;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.Test;
 
 public class MainModelTest {
 

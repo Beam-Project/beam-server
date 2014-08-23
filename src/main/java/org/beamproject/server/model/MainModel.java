@@ -18,8 +18,6 @@
  */
 package org.beamproject.server.model;
 
-import org.beamproject.common.carrier.ClientCarrierModel;
-import org.beamproject.common.carrier.ServerCarrierModel;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -34,18 +32,32 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import lombok.Getter;
 import lombok.Setter;
-import org.beamproject.server.App;
-import static org.beamproject.server.Event.*;
-import static org.beamproject.server.util.Config.Key.*;
-import org.beamproject.common.crypto.EncryptedConfig;
-import org.beamproject.common.util.Files;
 import org.beamproject.common.Server;
-import org.beamproject.common.util.Base58;
-import org.beamproject.common.util.Executor;
 import org.beamproject.common.carrier.CarrierException;
+import org.beamproject.common.carrier.ClientCarrierModel;
+import org.beamproject.common.carrier.ServerCarrierModel;
 import static org.beamproject.common.crypto.BouncyCastleIntegrator.initBouncyCastleProvider;
 import static org.beamproject.common.crypto.EccKeyPairGenerator.fromBothKeys;
+import org.beamproject.common.crypto.EncryptedConfig;
+import org.beamproject.common.util.Base58;
+import org.beamproject.common.util.Executor;
+import org.beamproject.common.util.Files;
+import org.beamproject.server.App;
+import static org.beamproject.server.Event.CARRIERS_STARTED;
+import static org.beamproject.server.Event.CARRIER_EXCEPTION;
+import static org.beamproject.server.Event.COMMAND_LINE_EXCEPTION;
+import static org.beamproject.server.Event.INVALID_CONFIG_SERVER_URL;
+import static org.beamproject.server.Event.KEY_PAIR_STORED;
+import static org.beamproject.server.Event.MISSING_CONFIG_ENTRIES;
+import static org.beamproject.server.Event.SERVER_CONFIGURATION_LOADED;
 import org.beamproject.server.util.Config;
+import static org.beamproject.server.util.Config.Key.MQTT_HOST;
+import static org.beamproject.server.util.Config.Key.MQTT_PORT;
+import static org.beamproject.server.util.Config.Key.MQTT_SUBSCRIBER_TOPIC;
+import static org.beamproject.server.util.Config.Key.MQTT_USERNAME;
+import static org.beamproject.server.util.Config.Key.PRIVATE_KEY;
+import static org.beamproject.server.util.Config.Key.PUBLIC_KEY;
+import static org.beamproject.server.util.Config.Key.SERVER_URL;
 
 @Singleton
 public class MainModel {

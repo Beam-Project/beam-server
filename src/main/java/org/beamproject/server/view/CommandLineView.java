@@ -32,7 +32,12 @@ import org.beamproject.server.App;
 import org.beamproject.server.Event;
 import org.beamproject.server.model.MainModel;
 import org.beamproject.server.util.Config;
-import static org.beamproject.server.util.Config.Key.*;
+import static org.beamproject.server.util.Config.Key.MQTT_HOST;
+import static org.beamproject.server.util.Config.Key.MQTT_PORT;
+import static org.beamproject.server.util.Config.Key.MQTT_SUBSCRIBER_TOPIC;
+import static org.beamproject.server.util.Config.Key.PRIVATE_KEY;
+import static org.beamproject.server.util.Config.Key.PUBLIC_KEY;
+import static org.beamproject.server.util.Config.Key.SERVER_URL;
 
 public class CommandLineView {
 

@@ -21,8 +21,8 @@ package org.beamproject.server.carrier;
 import java.net.URL;
 import java.util.logging.Logger;
 import org.beamproject.common.Server;
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 
 public class HttpConnectionTest {
 

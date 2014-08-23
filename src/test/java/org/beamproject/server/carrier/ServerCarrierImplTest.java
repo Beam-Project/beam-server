@@ -18,13 +18,17 @@
  */
 package org.beamproject.server.carrier;
 
-import org.beamproject.common.carrier.CarrierException;
 import org.beamproject.common.Server;
-import org.beamproject.server.ExecutorFake;
+import org.beamproject.common.carrier.CarrierException;
 import org.beamproject.common.carrier.ServerCarrierModel;
-import static org.easymock.EasyMock.*;
-import org.junit.Test;
+import org.beamproject.server.ExecutorFake;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import org.junit.Before;
+import org.junit.Test;
 
 public class ServerCarrierImplTest {
 

@@ -18,19 +18,19 @@
  */
 package org.beamproject.server.model;
 
-import org.beamproject.common.carrier.ClientCarrierModel;
 import com.google.inject.Inject;
 import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
 import lombok.experimental.Delegate;
-import org.beamproject.common.message.Message;
-import org.beamproject.common.util.Executor;
-import org.beamproject.common.util.Task;
 import org.beamproject.common.carrier.ClientCarrier;
+import org.beamproject.common.carrier.ClientCarrierModel;
 import org.beamproject.common.crypto.CryptoPacker;
 import org.beamproject.common.crypto.CryptoPackerPool;
 import org.beamproject.common.crypto.HandshakeResponder;
+import org.beamproject.common.message.Message;
+import org.beamproject.common.util.Executor;
+import org.beamproject.common.util.Task;
 import org.beamproject.server.carrier.HandshakeChallengeHandler;
 import org.beamproject.server.carrier.HandshakeSuccessHandler;
 import org.beamproject.server.util.HandshakeStorage;

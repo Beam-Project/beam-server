@@ -19,7 +19,6 @@
 package org.beamproject.server.carrier;
 
 import com.google.inject.Inject;
-import org.beamproject.common.carrier.CarrierException;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -28,6 +27,7 @@ import java.net.URLEncoder;
 import static java.util.logging.Level.INFO;
 import java.util.logging.Logger;
 import org.apache.http.HttpStatus;
+import org.beamproject.common.carrier.CarrierException;
 import org.beamproject.common.crypto.CryptoPacker;
 import org.beamproject.common.util.Base64;
 

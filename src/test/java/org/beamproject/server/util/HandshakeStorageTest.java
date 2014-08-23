@@ -20,9 +20,11 @@ package org.beamproject.server.util;
 
 import org.beamproject.common.User;
 import org.beamproject.common.crypto.HandshakeResponder;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.Test;
 
 public class HandshakeStorageTest {
 

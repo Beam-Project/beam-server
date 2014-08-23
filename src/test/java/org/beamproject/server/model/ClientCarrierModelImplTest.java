@@ -19,7 +19,6 @@
 package org.beamproject.server.model;
 
 import java.util.logging.Logger;
-import static java.util.logging.Logger.getLogger;
 import org.beamproject.common.message.Message;
 import static org.beamproject.common.message.Field.Cnt.*;
 import static org.beamproject.common.message.Field.Cnt.Typ.*;
@@ -30,7 +29,6 @@ import org.beamproject.common.carrier.ClientCarrier;
 import org.beamproject.common.crypto.CryptoPacker;
 import org.beamproject.common.crypto.CryptoPackerPool;
 import org.beamproject.common.crypto.CryptoPackerPoolFactory;
-import org.beamproject.common.crypto.EccKeyPairGenerator;
 import static org.beamproject.common.crypto.EccKeyPairGenerator.fromPublicKey;
 import org.beamproject.common.crypto.HandshakeResponder;
 import org.beamproject.server.ExecutorFake;

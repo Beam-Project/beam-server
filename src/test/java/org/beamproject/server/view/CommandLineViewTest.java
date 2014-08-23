@@ -22,10 +22,13 @@ import java.util.Properties;
 import org.beamproject.server.BusFake;
 import org.beamproject.server.model.MainModel;
 import org.beamproject.server.util.Config;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import org.junit.After;
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 
 public class CommandLineViewTest {
 

@@ -18,8 +18,6 @@
  */
 package org.beamproject.server.carrier;
 
-import org.beamproject.common.message.Message;
-import static org.beamproject.common.message.Field.Cnt.*;
 import org.beamproject.common.Participant;
 import org.beamproject.common.carrier.MessageException;
 import static org.beamproject.common.crypto.EccKeyPairGenerator.fromPublicKey;
@@ -27,8 +25,12 @@ import org.beamproject.common.crypto.Handshake;
 import org.beamproject.common.crypto.HandshakeException;
 import org.beamproject.common.crypto.HandshakeResponder;
 import org.beamproject.common.message.ContentFieldValidator;
+import static org.beamproject.common.message.Field.Cnt.HS_PUBKEY;
+import static org.beamproject.common.message.Field.Cnt.HS_SIG;
+import static org.beamproject.common.message.Field.Cnt.TYP;
 import org.beamproject.common.message.HandshakePublicKeyValidator;
 import org.beamproject.common.message.HandshakeSignatureValidator;
+import org.beamproject.common.message.Message;
 import org.beamproject.common.message.MessageHandler;
 import org.beamproject.server.util.HandshakeStorage;
 import org.beamproject.server.util.SessionStorage;

@@ -19,10 +19,12 @@
 package org.beamproject.server.util;
 
 import java.util.Properties;
-import static org.beamproject.server.util.Config.Key.*;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.beamproject.server.util.Config.Key.SERVER_URL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.Test;
 
 public class ConfigTest {
 

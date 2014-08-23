@@ -26,8 +26,6 @@ import org.beamproject.common.Participant;
 import org.beamproject.common.Server;
 import org.beamproject.common.util.Executor;
 import org.beamproject.common.util.Task;
-import org.beamproject.server.carrier.HttpConnection;
-import org.beamproject.server.carrier.HttpConnectionPool;
 
 /**
  * Implements the {@link ServerCarrier} interface using HTTP to communicate with
