@@ -19,12 +19,12 @@
 package org.beamproject.server.carrier;
 
 import org.beamproject.common.message.Message;
-import org.beamproject.common.message.MessageField;
-import static org.beamproject.common.message.MessageField.ContentField.HSNONCE;
-import static org.beamproject.common.message.MessageField.ContentField.HSPUBKEY;
-import static org.beamproject.common.message.MessageField.ContentField.HSSIG;
-import static org.beamproject.common.message.MessageField.ContentField.TYP;
-import static org.beamproject.common.message.MessageField.ContentField.TypeValue.HS_RESPONSE;
+import org.beamproject.common.message.Field;
+import static org.beamproject.common.message.Field.Cnt.HS_NONCE;
+import static org.beamproject.common.message.Field.Cnt.HS_PUBKEY;
+import static org.beamproject.common.message.Field.Cnt.HS_SIG;
+import static org.beamproject.common.message.Field.Cnt.TYP;
+import static org.beamproject.common.message.Field.Cnt.Typ.HS_RESPONSE;
 import org.beamproject.common.Participant;
 import org.beamproject.common.carrier.MessageException;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
@@ -77,25 +77,25 @@ public class HandshakeSuccessHandlerTest {
 
     @Test(expected = MessageException.class)
     public void testHandelOnMissingPublicKey() {
-        success.getContent().remove(HSPUBKEY.toString());
+        success.getContent().remove(HS_PUBKEY.toString());
         nullMessage = handler.handle(success);
     }
 
     @Test(expected = MessageException.class)
     public void testHandelOnInvalidPublicKey() {
-        success.putContent(HSPUBKEY, "not a public key".getBytes());
+        success.putContent(HS_PUBKEY, "not a public key".getBytes());
         nullMessage = handler.handle(success);
     }
 
     @Test(expected = MessageException.class)
     public void testHandelOnMissingSignature() {
-        success.getContent().remove(HSSIG.toString());
+        success.getContent().remove(HS_SIG.toString());
         nullMessage = handler.handle(success);
     }
 
     @Test(expected = MessageException.class)
     public void testHandelOnInvalidSignature() {
-        success.putContent(HSSIG, "not a signature".getBytes());
+        success.putContent(HS_SIG, "not a signature".getBytes());
         nullMessage = handler.handle(success);
     }
 

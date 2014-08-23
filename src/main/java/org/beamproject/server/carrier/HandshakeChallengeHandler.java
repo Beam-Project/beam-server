@@ -19,7 +19,7 @@
 package org.beamproject.server.carrier;
 
 import org.beamproject.common.message.Message;
-import static org.beamproject.common.message.MessageField.ContentField.*;
+import static org.beamproject.common.message.Field.Cnt.*;
 import org.beamproject.common.Participant;
 import org.beamproject.common.carrier.MessageException;
 import static org.beamproject.common.crypto.EccKeyPairGenerator.fromPublicKey;
@@ -44,7 +44,7 @@ public class HandshakeChallengeHandler extends MessageHandler {
     private Participant remoteParticipant;
 
     public HandshakeChallengeHandler(HandshakeStorage<HandshakeResponder> responders) {
-        super(new ContentFieldMessageValidator(TYP, HSNONCE, HSPUBKEY),
+        super(new ContentFieldMessageValidator(TYP, HS_NONCE, HS_PUBKEY),
                 new HandshakeNonceMessageValidator(),
                 new HandshakePublicKeyMessageValidator());
         this.handshakeStorage = responders;
@@ -59,7 +59,7 @@ public class HandshakeChallengeHandler extends MessageHandler {
 
     private void restoreRemoteParticipant() {
         try {
-            byte[] remotePublicKeyBytes = message.getContent(HSPUBKEY);
+            byte[] remotePublicKeyBytes = message.getContent(HS_PUBKEY);
             remoteParticipant = new Participant(fromPublicKey(remotePublicKeyBytes));
         } catch (IllegalArgumentException | IllegalStateException ex) {
             throw new MessageException("Could not restore the remote participant's public key: " + ex.getMessage());

@@ -71,7 +71,7 @@ public class SessionStorageTest {
         storage.removeSession(KEY);
 
         assertFalse(storage.isSessionExisting(KEY));
-        
+
         for (byte b : session.getKey()) {
             assertEquals((byte) 0, b);
         }

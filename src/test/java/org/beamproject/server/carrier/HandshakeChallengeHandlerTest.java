@@ -19,10 +19,10 @@
 package org.beamproject.server.carrier;
 
 import org.beamproject.common.message.Message;
-import static org.beamproject.common.message.MessageField.ContentField.HSNONCE;
-import static org.beamproject.common.message.MessageField.ContentField.HSPUBKEY;
-import static org.beamproject.common.message.MessageField.ContentField.TYP;
-import static org.beamproject.common.message.MessageField.ContentField.TypeValue.HS_RESPONSE;
+import static org.beamproject.common.message.Field.Cnt.HS_NONCE;
+import static org.beamproject.common.message.Field.Cnt.HS_PUBKEY;
+import static org.beamproject.common.message.Field.Cnt.TYP;
+import static org.beamproject.common.message.Field.Cnt.Typ.HS_RESPONSE;
 import org.beamproject.common.Participant;
 import org.beamproject.common.carrier.MessageException;
 import static org.beamproject.common.crypto.EccKeyPairGenerator.fromPublicKey;
@@ -62,14 +62,14 @@ public class HandshakeChallengeHandlerTest {
     @Test(expected = MessageException.class)
     public void testHandleOnMissingNonce() {
         challenge = challenger.produceChallenge(server);
-        challenge.getContent().remove(HSNONCE.toString());
+        challenge.getContent().remove(HS_NONCE.toString());
         response = handler.handle(challenge);
     }
 
     @Test(expected = MessageException.class)
     public void testHandleOnMissingPublicKey() {
         challenge = challenger.produceChallenge(server);
-        challenge.getContent().remove(HSPUBKEY.toString());
+        challenge.getContent().remove(HS_PUBKEY.toString());
         response = handler.handle(challenge);
     }
 

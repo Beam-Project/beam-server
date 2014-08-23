@@ -70,7 +70,7 @@ public class ClientCarrierModelImpl implements ClientCarrierModel {
             @Override
             public void run() {
                 CryptoPacker packer = null;
-                    log.log(INFO, "an infor message");
+                log.log(INFO, "an infor message");
 
                 try {
                     packer = packerPool.borrowObject();

@@ -101,7 +101,7 @@ public class HttpServer implements Container {
         try {
             URL url = new URL(config.get(Config.Key.SERVER_URL));
             int candidate = url.getPort();
-            
+
             return candidate == -1
                     ? url.getDefaultPort()
                     : candidate;
