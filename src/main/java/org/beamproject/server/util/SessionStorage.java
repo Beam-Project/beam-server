@@ -21,7 +21,6 @@ package org.beamproject.server.util;
 import java.util.concurrent.ConcurrentHashMap;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Session;
-import org.beamproject.common.util.Base58;
 import org.beamproject.common.util.ComparableBytes;
 
 /**
