@@ -57,7 +57,6 @@ public class SessionStorage {
      */
     public void setSession(Participant remoteParticipant, byte[] sessionKey) {
         sessions.put(new ComparableBytes(sessionKey), new Session(remoteParticipant, sessionKey));
-        System.out.println("added session with user: " + remoteParticipant.getPublicKeyAsBase58());
     }
 
     /**
