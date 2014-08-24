@@ -24,6 +24,7 @@ import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
 import lombok.experimental.Delegate;
 import org.beamproject.common.carrier.ClientCarrier;
+import static org.beamproject.common.carrier.ClientCarrier.MQTT_OUT_TOPIC_PREFIX;
 import org.beamproject.common.carrier.ClientCarrierModel;
 import org.beamproject.common.crypto.CryptoPacker;
 import org.beamproject.common.crypto.CryptoPackerPool;
@@ -70,7 +71,6 @@ public class ClientCarrierModelImpl implements ClientCarrierModel {
             @Override
             public void run() {
                 CryptoPacker packer = null;
-                log.log(INFO, "an infor message");
 
                 try {
                     packer = packerPool.borrowObject();
@@ -78,7 +78,7 @@ public class ClientCarrierModelImpl implements ClientCarrierModel {
                     Message response = produceResponse(message);
 
                     if (response != null) {
-                        encryptAndSend(response, username);
+                        encryptAndSend(response, MQTT_OUT_TOPIC_PREFIX + username);
                     }
                 } catch (Exception ex) {
                     log.log(WARNING, "Could not handle an incoming message: {0}", ex.getMessage());

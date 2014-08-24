@@ -46,7 +46,7 @@ public class ClientCarrierModelImplTest {
     private final User USER = User.generate();
     private final Participant USER_WITH_ONLY_PUBLIC_KEY = new Participant(fromPublicKey(USER.getPublicKeyAsBytes()));
     private final Server SERVER = Server.generate();
-    private final String TOPIC = "inOrOut/username";
+    private final String TOPIC = "out/spock";
     private final String USERNAME = "spock";
     private MainModel mainModel;
     private ClientCarrier carrier;
