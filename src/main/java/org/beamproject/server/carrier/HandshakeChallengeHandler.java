@@ -25,8 +25,8 @@ import org.beamproject.common.crypto.Handshake;
 import org.beamproject.common.crypto.HandshakeException;
 import org.beamproject.common.crypto.HandshakeResponder;
 import org.beamproject.common.message.ContentFieldValidator;
-import static org.beamproject.common.message.Field.Cnt.HS_NONCE;
-import static org.beamproject.common.message.Field.Cnt.HS_PUBKEY;
+import static org.beamproject.common.message.Field.Cnt.NONCE;
+import static org.beamproject.common.message.Field.Cnt.PUBLIC_KEY;
 import static org.beamproject.common.message.Field.Cnt.TYP;
 import org.beamproject.common.message.HandshakeNonceValidator;
 import org.beamproject.common.message.HandshakePublicKeyValidator;
@@ -46,7 +46,7 @@ public class HandshakeChallengeHandler extends MessageHandler {
     private Participant remoteParticipant;
 
     public HandshakeChallengeHandler(HandshakeStorage<HandshakeResponder> responders) {
-        super(new ContentFieldValidator(TYP, HS_NONCE, HS_PUBKEY),
+        super(new ContentFieldValidator(TYP, NONCE, PUBLIC_KEY),
                 new HandshakeNonceValidator(),
                 new HandshakePublicKeyValidator());
         this.handshakeStorage = responders;
@@ -61,7 +61,7 @@ public class HandshakeChallengeHandler extends MessageHandler {
 
     private void restoreRemoteParticipant() {
         try {
-            byte[] remotePublicKeyBytes = message.getContent(HS_PUBKEY);
+            byte[] remotePublicKeyBytes = message.getContent(PUBLIC_KEY);
             remoteParticipant = new Participant(fromPublicKey(remotePublicKeyBytes));
         } catch (IllegalArgumentException | IllegalStateException ex) {
             throw new MessageException("Could not restore the remote participant's public key: " + ex.getMessage());

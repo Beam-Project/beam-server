@@ -23,8 +23,8 @@ import org.beamproject.common.carrier.MessageException;
 import static org.beamproject.common.crypto.EccKeyPairGenerator.fromPublicKey;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.crypto.HandshakeResponder;
-import static org.beamproject.common.message.Field.Cnt.HS_NONCE;
-import static org.beamproject.common.message.Field.Cnt.HS_PUBKEY;
+import static org.beamproject.common.message.Field.Cnt.NONCE;
+import static org.beamproject.common.message.Field.Cnt.PUBLIC_KEY;
 import static org.beamproject.common.message.Field.Cnt.TYP;
 import static org.beamproject.common.message.Field.Cnt.Typ.HS_RESPONSE;
 import org.beamproject.common.message.Message;
@@ -62,14 +62,14 @@ public class HandshakeChallengeHandlerTest {
     @Test(expected = MessageException.class)
     public void testHandleOnMissingNonce() {
         challenge = challenger.produceChallenge(server);
-        challenge.getContent().remove(HS_NONCE.toString());
+        challenge.getContent().remove(NONCE.toString());
         response = handler.handle(challenge);
     }
 
     @Test(expected = MessageException.class)
     public void testHandleOnMissingPublicKey() {
         challenge = challenger.produceChallenge(server);
-        challenge.getContent().remove(HS_PUBKEY.toString());
+        challenge.getContent().remove(PUBLIC_KEY.toString());
         response = handler.handle(challenge);
     }
 

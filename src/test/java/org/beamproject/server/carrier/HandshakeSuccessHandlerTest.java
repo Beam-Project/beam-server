@@ -19,8 +19,8 @@
 package org.beamproject.server.carrier;
 
 import org.beamproject.common.message.Message;
-import static org.beamproject.common.message.Field.Cnt.HS_PUBKEY;
-import static org.beamproject.common.message.Field.Cnt.HS_SIG;
+import static org.beamproject.common.message.Field.Cnt.PUBLIC_KEY;
+import static org.beamproject.common.message.Field.Cnt.SIGNATURE;
 import static org.beamproject.common.message.Field.Cnt.TYP;
 import org.beamproject.common.Participant;
 import org.beamproject.common.carrier.MessageException;
@@ -73,25 +73,25 @@ public class HandshakeSuccessHandlerTest {
 
     @Test(expected = MessageException.class)
     public void testHandelOnMissingPublicKey() {
-        success.getContent().remove(HS_PUBKEY.toString());
+        success.getContent().remove(PUBLIC_KEY.toString());
         nullMessage = handler.handle(success);
     }
 
     @Test(expected = MessageException.class)
     public void testHandelOnInvalidPublicKey() {
-        success.putContent(HS_PUBKEY, "not a public key".getBytes());
+        success.putContent(PUBLIC_KEY, "not a public key".getBytes());
         nullMessage = handler.handle(success);
     }
 
     @Test(expected = MessageException.class)
     public void testHandelOnMissingSignature() {
-        success.getContent().remove(HS_SIG.toString());
+        success.getContent().remove(SIGNATURE.toString());
         nullMessage = handler.handle(success);
     }
 
     @Test(expected = MessageException.class)
     public void testHandelOnInvalidSignature() {
-        success.putContent(HS_SIG, "not a signature".getBytes());
+        success.putContent(SIGNATURE, "not a signature".getBytes());
         nullMessage = handler.handle(success);
     }
 
