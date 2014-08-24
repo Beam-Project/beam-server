@@ -51,7 +51,7 @@ import org.simpleframework.transport.connect.SocketConnection;
  */
 public class HttpServer implements Container {
 
-    public final static String POST_KEY = "data";
+    public final static String POST_MESSAGE_KEY = "MSG";
     private final static String HEADER_CONTENT_TYPE_KEY = "Content-Type";
     private final static String HEADER_CONTENT_TYPE_VALUE = "text/plain";
     private final static String HEADER_SERVER_KEY = "Server";
@@ -158,7 +158,7 @@ public class HttpServer implements Container {
 
     private byte[] readPostData(Request request) {
         Query query = request.getQuery();
-        return Base64.decode(query.get(POST_KEY));
+        return Base64.decode(query.get(POST_MESSAGE_KEY));
     }
 
 }
