@@ -18,8 +18,8 @@
  */
 package org.beamproject.server.carrier;
 
+import java.net.URL;
 import org.beamproject.common.Server;
-import org.beamproject.common.carrier.CarrierException;
 import org.beamproject.common.carrier.ServerCarrierModel;
 import org.beamproject.server.ExecutorFake;
 import static org.easymock.EasyMock.createMock;
@@ -34,6 +34,7 @@ public class ServerCarrierImplTest {
 
     private final Server SERVER = Server.generate();
     private final byte[] MESSAGE = "myMessage".getBytes();
+    private final String URL = "http://localhost";
     private final String PATH = "/myPath";
     private ExecutorFake executorFake;
     private HttpConnectionPool connectionPool;
@@ -52,20 +53,15 @@ public class ServerCarrierImplTest {
         carrier = new ServerCarrierImpl(model, executorFake, connectionPool, httpServer);
     }
 
-    @Test(expected = CarrierException.class)
-    public void testDeliverMessageOnMissingRecipientBinding() {
-        carrier.deliverMessage(MESSAGE, SERVER);
-    }
-
     @Test
     public void testDeliverMessage() throws Exception {
         expect(connectionPool.borrowObject()).andReturn(connection);
-        connection.post(SERVER.getHttpUrl(), MESSAGE);
+        connection.post(new URL(URL), MESSAGE);
         expectLastCall();
         connectionPool.returnObject(connection);
         replay(connectionPool, connection);
 
-        carrier.deliverMessage(MESSAGE, SERVER);
+        carrier.deliverMessage(MESSAGE, URL);
 
         verify(connectionPool, connection);
     }

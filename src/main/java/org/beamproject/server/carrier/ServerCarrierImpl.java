@@ -21,9 +21,8 @@ package org.beamproject.server.carrier;
 import org.beamproject.common.carrier.CarrierException;
 import org.beamproject.common.carrier.ServerCarrier;
 import com.google.inject.Inject;
+import java.net.URL;
 import org.beamproject.common.carrier.ServerCarrierModel;
-import org.beamproject.common.Participant;
-import org.beamproject.common.Server;
 import org.beamproject.common.util.Executor;
 import org.beamproject.common.util.Task;
 
@@ -53,28 +52,20 @@ public class ServerCarrierImpl implements ServerCarrier {
     }
 
     /**
-     * Delivers the given message to the recipient.
+     * Delivers the given message to the server of the given URL.
      *
      * @param message The message to send. This has to be already encrypted.
-     * @param recipient The recipient of the message.
-     * @throws IllegalArgumentException If the given recipient is not of a
-     * {@link Server}.
+     * @param url The target server of the message.
      * @throws CarrierException If the message could not be sent.
      */
     @Override
-    public void deliverMessage(final byte[] message, final Participant recipient) {
+    public void deliverMessage(final byte[] message, final String url) {
         executor.runAsync(new Task() {
             @Override
             public void run() {
-                if (!(recipient instanceof Server)) {
-                    throw new IllegalArgumentException("The given recipient is not a Server.");
-                }
-
-                Server targetServer = (Server) recipient;
-
                 try {
                     HttpConnection connection = connectionPool.borrowObject();
-                    connection.post(targetServer.getHttpUrl(), message);
+                    connection.post(new URL(url), message);
                     connectionPool.returnObject(connection);
                 } catch (Exception ex) {
                     throw new CarrierException("The message could not be sent:" + ex.getMessage());

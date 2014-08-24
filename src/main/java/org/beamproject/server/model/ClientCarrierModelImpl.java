@@ -65,7 +65,7 @@ public class ClientCarrierModelImpl implements ClientCarrierModel {
     }
 
     @Override
-    public void consumeMessage(final byte[] ciphertext, String topic) {
+    public void consumeMessage(final byte[] ciphertext, final String username) {
         executor.runAsync(new Task() {
             @Override
             public void run() {
@@ -75,7 +75,11 @@ public class ClientCarrierModelImpl implements ClientCarrierModel {
                 try {
                     packer = packerPool.borrowObject();
                     Message message = packer.decryptAndUnpack(ciphertext, model.getServer());
-                    routeMessage(message);
+                    Message response = produceResponse(message);
+
+                    if (response != null) {
+                        encryptAndSend(response, username);
+                    }
                 } catch (Exception ex) {
                     log.log(WARNING, "Could not handle an incoming message: {0}", ex.getMessage());
                 } finally {
@@ -85,32 +89,26 @@ public class ClientCarrierModelImpl implements ClientCarrierModel {
         });
     }
 
-    private void routeMessage(Message message) {
-        Message response = null;
-
+    private Message produceResponse(Message message) {
         switch (message.getType()) {
 
             case HS_CHALLENGE:
                 HandshakeChallengeHandler challengeHandler = new HandshakeChallengeHandler(handshakeStorage);
-                response = challengeHandler.handle(message);
-                break;
+                return challengeHandler.handle(message);
 
             case HS_SUCCESS:
                 HandshakeSuccessHandler successHandler = new HandshakeSuccessHandler(handshakeStorage, sessionStorage);
-                response = successHandler.handle(message);
-                break;
+                return successHandler.handle(message);
 
             default:
                 log.log(INFO, "Received a message of unknown type - ignore it.");
         }
 
-        if (response != null) {
-            encryptAndSend(response);
-        }
+        return null;
     }
 
     @Override
-    public void encryptAndSend(final Message message) {
+    public void encryptAndSend(final Message message, final String topic) {
         executor.runAsync(new Task() {
             @Override
             public void run() {
@@ -119,7 +117,7 @@ public class ClientCarrierModelImpl implements ClientCarrierModel {
                 try {
                     packer = packerPool.borrowObject();
                     byte[] ciphertext = packer.packAndEncrypt(message);
-                    carrier.deliverMessage(ciphertext, message.getRecipient());
+                    carrier.deliverMessage(ciphertext, topic);
                 } catch (Exception ex) {
                     log.log(WARNING, "Could not send a message: {0}", ex.getMessage());
                 } finally {

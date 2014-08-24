@@ -47,6 +47,7 @@ public class ClientCarrierModelImplTest {
     private final Participant USER_WITH_ONLY_PUBLIC_KEY = new Participant(fromPublicKey(USER.getPublicKeyAsBytes()));
     private final Server SERVER = Server.generate();
     private final String TOPIC = "inOrOut/username";
+    private final String USERNAME = "spock";
     private MainModel mainModel;
     private ClientCarrier carrier;
     private HandshakeStorage<HandshakeResponder> handshakeStorage;
@@ -103,26 +104,25 @@ public class ClientCarrierModelImplTest {
 
     @Test
     public void testEncryptAndSend() {
-        final Message message = new Message(FORWARD, USER);
+        final Message message = new Message(FORWARD, SERVER);
         message.putContent(MSG, "my message");
 
-        carrier.deliverMessage(anyObject(byte[].class), anyObject(Participant.class));
+        carrier.deliverMessage(anyObject(byte[].class), anyObject(String.class));
         expectLastCall().andAnswer(new IAnswer<Object>() {
             @Override
             public Object answer() {
                 byte[] ciphertext = (byte[]) getCurrentArguments()[0];
-                Participant recipient = (Participant) getCurrentArguments()[1];
-                Message plaintext = PACKER.decryptAndUnpack(ciphertext, recipient);
+                String topic = (String) getCurrentArguments()[1];
+                Message plaintext = PACKER.decryptAndUnpack(ciphertext, SERVER);
 
-                assertEquals(USER, message.getRecipient());
-                assertSame(USER, recipient);
+                assertEquals(TOPIC, topic);
                 assertArrayEquals("my message".getBytes(), plaintext.getContent(MSG));
                 return null;
             }
         });
         replay(carrier);
 
-        model.encryptAndSend(message);
+        model.encryptAndSend(message, TOPIC);
 
         verify(carrier);
     }
