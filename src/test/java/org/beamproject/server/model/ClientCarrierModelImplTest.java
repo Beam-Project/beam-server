@@ -46,6 +46,7 @@ public class ClientCarrierModelImplTest {
     private final User USER = User.generate();
     private final Participant USER_WITH_ONLY_PUBLIC_KEY = new Participant(fromPublicKey(USER.getPublicKeyAsBytes()));
     private final Server SERVER = Server.generate();
+    private final String TOPIC = "inOrOut/username";
     private MainModel mainModel;
     private ClientCarrier carrier;
     private HandshakeStorage<HandshakeResponder> handshakeStorage;
@@ -81,7 +82,7 @@ public class ClientCarrierModelImplTest {
         expect(mainModel.getServer()).andReturn(SERVER);
         replay(mainModel, carrier);
 
-        model.consumeMessage(encrypt(message));
+        model.consumeMessage(encrypt(message), TOPIC);
 
         // nothing should happen
         verify(mainModel, carrier);
@@ -94,7 +95,7 @@ public class ClientCarrierModelImplTest {
         expect(mainModel.getServer()).andReturn(SERVER);
         replay(mainModel, carrier);
 
-        model.consumeMessage(encrypt(message));
+        model.consumeMessage(encrypt(message), TOPIC);
 
         // nothing should happen
         verify(mainModel, carrier);

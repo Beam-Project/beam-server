@@ -96,7 +96,7 @@ public class ServerCarrierImpl implements ServerCarrier {
 
     @Override
     public void receive(byte[] message, String path) {
-        model.consumeMessage(message);
+        model.consumeMessage(message, path);
     }
 
     @Override

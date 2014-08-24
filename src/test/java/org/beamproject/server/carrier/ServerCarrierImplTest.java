@@ -34,6 +34,7 @@ public class ServerCarrierImplTest {
 
     private final Server SERVER = Server.generate();
     private final byte[] MESSAGE = "myMessage".getBytes();
+    private final String PATH = "/myPath";
     private ExecutorFake executorFake;
     private HttpConnectionPool connectionPool;
     private HttpConnection connection;
@@ -95,11 +96,11 @@ public class ServerCarrierImplTest {
 
     @Test
     public void testReceive() {
-        model.consumeMessage(MESSAGE);
+        model.consumeMessage(MESSAGE, PATH);
         expectLastCall();
         replay(model);
 
-        carrier.receive(MESSAGE, "/myPath");
+        carrier.receive(MESSAGE, PATH);
 
         verify(model);
     }

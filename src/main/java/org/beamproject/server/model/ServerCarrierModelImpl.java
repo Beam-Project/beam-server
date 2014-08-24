@@ -45,7 +45,7 @@ public class ServerCarrierModelImpl implements ServerCarrierModel {
     }
 
     @Override
-    public void consumeMessage(final byte[] message) {
+    public void consumeMessage(final byte[] message, String path) {
         executor.runAsync(new Task() {
             @Override
             public void run() {
