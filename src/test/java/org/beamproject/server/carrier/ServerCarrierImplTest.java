@@ -99,7 +99,7 @@ public class ServerCarrierImplTest {
         expectLastCall();
         replay(model);
 
-        carrier.receive(MESSAGE);
+        carrier.receive(MESSAGE, "/myPath");
 
         verify(model);
     }

@@ -142,7 +142,7 @@ public class HttpServer implements Container {
                     response.setDate(HEADER_LAST_MODIFIED_KEY, date);
                     response.setStatus(Status.NO_CONTENT);
 
-                    carrier.receive(readPostData(request));
+                    carrier.receive(readPostData(request), request.getTarget());
                 } catch (Exception ex) {
                     throw new CarrierException("Could not handle HTTP request: " + ex.getMessage());
                 } finally {
