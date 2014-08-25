@@ -74,10 +74,13 @@ public class ClientCarrierModelImpl implements ClientCarrierModel {
 
                 try {
                     packer = packerPool.borrowObject();
-                    Message message = packer.decryptAndUnpack(ciphertext, model.getServer());
-                    Message response = produceResponse(message);
+
+                    Message request = packer.decryptAndUnpack(ciphertext, model.getServer());
+                    log.log(INFO, "Handle request of type: {0}", request.getType().toString());
+                    Message response = produceResponse(request);
 
                     if (response != null) {
+                        log.log(INFO, "Send response of type: {0}", response.getType().toString());
                         encryptAndSend(response, MQTT_OUT_TOPIC_PREFIX + username);
                     }
                 } catch (Exception ex) {
